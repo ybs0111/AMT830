@@ -3215,3 +3215,24 @@ void CDialog_Manual_BackHs::OnBtnGoBHsPos()
 	SetTimer(TMR_BACKHSMOT_CMD, 10, NULL);		// 모터 동작 제어 타이머
 	// **************************************************************************				
 }
+
+BOOL CDialog_Manual_BackHs::DestroyWindow() 
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if( m_p_font != NULL)
+	{
+		delete m_p_font;
+		m_p_font = NULL;
+	}
+	if(m_load_combo_font != NULL)
+	{
+		delete m_load_combo_font;
+		m_load_combo_font = NULL;
+	}
+	if(m_motor_font != NULL)
+	{
+		delete m_motor_font;
+		m_motor_font = NULL;
+	}	
+	return CDialog::DestroyWindow();
+}

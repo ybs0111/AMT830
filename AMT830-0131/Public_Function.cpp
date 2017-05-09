@@ -14243,8 +14243,206 @@ int CPublic_Function::OnLabelPrint_Parsing(CString strCheckData, int i)
 }
 
 
-/////////////////////////
+///////////////////////////////////////////////////////////////////////////
+//2017.0428
 
+int CPublic_Function::GetModelFromPartID( CString PartID, CString& strModel)
+{
+	int nFuncRet = RET_ERROR, nRet = 0, nMdl = 0;
+	
+	PartID.TrimLeft(' ');	
+	PartID.TrimRight(' ');
+	
+	nRet = LoadRegModelData();
+	if( nRet == RET_GOOD)
+	{
+		nItemLength = 0;
+		nMdl = GetModelNumFromModel(st_work.m_strCurModel);
+		nRet = ModelFileload(st_work.m_strCurModel);
+		if( nMdl>=0 && nRet == RET_GOOD && nItemLength > 0) 
+		{
+			for (int ii = 0; ii < nItemLength; ii++)
+			{
+				m_strModel[nMdl][ii] = m_strItemValue[ii];
+				if(m_strItemValue[ii].Compare( (LPCTSTR)PartID) == 0)
+				{
+					strModel = st_work.m_strCurModel;
+					nFuncRet = RET_GOOD;
+					if (st_handler.cwnd_list != NULL)  // 리스트 바 화면 존재
+					{
+						sprintf(st_msg.c_normal_msg, "%s Model is same", st_work.m_strCurModel);
+						st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청
+					}
+					
+					break;
+				}
+			}
+		}
+		
+		if(nFuncRet != RET_GOOD)
+		{
+			for (int i= 0; i < st_work.m_nMdlTotal; i++ )
+			{
+				nItemLength = 0;
+				nRet = ModelFileload(st_work.m_strModelName[i]);
+				if( nRet == RET_GOOD && nItemLength > 0) 
+				{
+					for (int ii = 0; ii < nItemLength; ii++)
+					{
+						m_strModel[i][ii] = m_strItemValue[ii];
+						if(m_strItemValue[ii].Compare( (LPCTSTR)PartID) == 0)
+						{
+							strModel = st_work.m_strModelName[i];
+							nFuncRet = RET_GOOD;
+							if (st_handler.cwnd_list != NULL)  // 리스트 바 화면 존재
+							{
+								sprintf(st_msg.c_normal_msg, "%s Model is different", strModel);
+								st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청
+							}
+							break;
+						}
+					}
+				}
+			}
+		}	
+	}
+	return nFuncRet;
+}
+
+int CPublic_Function::ModelFileload(CString strMdl)
+{
+	int nFunRet = RET_ERROR;
+	CString strFilePath;
+	strFilePath = _T("C:\\AMT830\\Setting\\ModelName\\");
+	strMdl.TrimLeft(); strMdl.TrimRight();
+	CString strFile = strMdl + _T(".TXT");
+	//FileRead(strFilePath + strFile);
+	
+	int nTotal = 0;
+	FILE    *fp ;
+	int     existence;
+	char chr_data[100];	
+	
+	strFilePath += strFile;
+	
+	existence = access(strFilePath, 0);
+	
+	if (!existence)
+	{
+		if ((fp=fopen(strFilePath,"rb")) == NULL)
+		{
+			return nFunRet;
+		}
+	}
+	else
+	{
+		// 		m_nMdlTotal = 0;
+		return nFunRet;
+	}
+	
+	for(int i = 0; i < 500; i++)  
+	{
+		m_strItemValue[i].Empty();
+	}
+	
+	
+	:: GetPrivateProfileString(strMdl, "Total", "0", chr_data, 100, strFilePath);
+	nTotal = atoi(chr_data);
+	
+	nItemLength = nTotal;
+	
+	CString str,strLabel;
+	for (i = 0; i < nTotal; i++)
+	{
+		str.Format("%d",i+1);
+		:: GetPrivateProfileString(strMdl, str, "0", chr_data, 100, strFilePath);
+		strLabel = chr_data;
+		strLabel.TrimLeft(); strLabel.TrimRight();
+		m_strItemValue[i] = strLabel;
+	}
+	fclose(fp);
+	nFunRet = RET_GOOD;
+	
+	return nFunRet;
+}
+
+
+int CPublic_Function::GetModelNumFromModel( CString strModel)
+{
+	int nFuncRet = -1;
+	int nRet = RET_ERROR;
+	nRet = LoadRegModelData();
+	if(nRet == RET_GOOD)
+	{
+		for ( int i = 0; i < st_work.m_nMdlTotal; i++ )
+		{
+			if( st_work.m_strModelName[i].Compare( (LPCTSTR) strModel) == 0 )
+			{
+				nFuncRet = i;
+				break;
+			}
+		}
+	}
+	return nFuncRet;
+	
+}
+int CPublic_Function::LoadRegModelData()
+{
+	int nFuncRet = RET_ERROR;
+	int nTotal = 0;
+	FILE    *fp ;
+	int     existence;
+	char chr_data[100];
+	
+	CString str_LoadFile = "C:\\AMT830\\Setting\\ModelName.ini";
+	
+	existence = access(str_LoadFile, 0);
+	
+	if (!existence)
+	{
+		if ((fp=fopen(str_LoadFile,"rb")) == NULL)
+		{
+			if (st_handler.cwnd_list != NULL)
+			{
+				sprintf(st_msg.c_abnormal_msg, "[%s] file open error.", str_LoadFile);
+				st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청
+			}
+			st_work.m_nMdlTotal = 0;
+			return nFuncRet;
+		}
+	}
+	else
+	{
+		if (st_handler.cwnd_list != NULL)
+		{
+			sprintf(st_msg.c_abnormal_msg, "[%s] file is not exist.", str_LoadFile);
+			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청
+		}
+		st_work.m_nMdlTotal = 0;
+		return nFuncRet;
+	}
+	:: GetPrivateProfileString("Model_Name", "Total", "0", chr_data, 100, str_LoadFile);
+	nTotal = atoi(chr_data);
+	
+	st_work.m_nMdlTotal = nTotal;
+	
+	CString str,strLabel;
+	for (int i = 0; i < nTotal; i++)
+	{
+		str.Format("%d",i+1);
+		:: GetPrivateProfileString("Model_Name", str, "0", chr_data, 100, str_LoadFile);
+		strLabel = chr_data;
+		strLabel.TrimLeft(' ');               
+		strLabel.TrimRight(' ');
+		st_work.m_strModelName[i] = strLabel;
+	}
+	fclose(fp);
+	
+	nFuncRet = RET_GOOD;
+	
+	return nFuncRet;
+}
+///////////////////////////////////////////////////////////////////////////
 
 int CPublic_Function::OnHeatSinkModel_Change_Req()
 {
@@ -14252,21 +14450,50 @@ int CPublic_Function::OnHeatSinkModel_Change_Req()
 	
 	int num = 0, num1 =0;
 	//2016.0823  M386A->DDR4  RDMM을 DDR4로 변경
-	if(st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M393B") ||
-		st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M386A") || 
-		st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M393A") ) //2017.0223
-	{
-		st_work.n_hsNojob = 3;//RDMM 003//20120831
-	}
-	else if(st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M392B"))
-	{
-		st_work.n_hsNojob = 1;//VLPDIMM 001//20120831
-	}
-	else if(st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M386B"))
-	{
-		st_work.n_hsNojob = 2;//LRDMM 001//20140114
-	}
-	else
+// 	if(st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M393B") ||
+// 		st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M386A") || 
+// 		st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M393A") ) //2017.0223
+// 	{
+// 		st_work.n_hsNojob = 3;//RDMM 003//20120831
+// 	}
+// 	else if(st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M392B"))
+// 	{
+// 		st_work.n_hsNojob = 1;//VLPDIMM 001//20120831
+// 	}
+// 	else if(st_NW.mstr_Recive_PartNo[0].Mid(0,5) == _T("M386B"))
+// 	{
+// 		st_work.n_hsNojob = 2;//LRDMM 001//20140114
+// 	}
+// 	else
+// 	{
+// 		nFuncRet = RET_ERROR; //CTLBD_RET_ERROR  // num1 = 0;//error NRDIMM 002
+// 		//992000 0 99 "BCR Job Change Model이 없습니다."
+// 		//992001 0 99 "Heat Sink Job Change Model이 없습니다."
+// 		sprintf(cJamcode,"992001");
+// 		CTL_Lib.Alarm_Error_Occurrence(5064, CTL_dWARNING, cJamcode);
+// 		if(st_handler.cwnd_list != NULL)
+// 		{  // 리스트 바 화면 존재 //
+// 			sprintf(st_msg.c_abnormal_msg, "Heat Sink Job Change Model이 없습니다.");
+// 			if(st_handler.mn_language == LANGUAGE_ENGLISH) 
+// 			{
+// 				sprintf(st_msg.c_abnormal_msg, "No Heat Sink Job Change Model");
+// 			}
+// 
+// 			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청 //
+// 		}
+// 		return RET_ERROR;
+// 
+// 	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	//2017.0428
+	CString strLotID,strPartID, strModel;
+	CString strname = st_basic.mstr_device_name;
+	strname.Replace(".TXT", "");
+	st_work.m_strCurModel = strname;
+	strPartID = st_NW.mstr_Recive_PartNo[0].Mid(0,5);
+	nMdl = Func.GetModelFromPartID(strPartID, strModel);
+	if( nMdl != RET_GOOD )
 	{
 		nFuncRet = RET_ERROR; //CTLBD_RET_ERROR  // num1 = 0;//error NRDIMM 002
 		//992000 0 99 "BCR Job Change Model이 없습니다."
@@ -14280,12 +14507,13 @@ int CPublic_Function::OnHeatSinkModel_Change_Req()
 			{
 				sprintf(st_msg.c_abnormal_msg, "No Heat Sink Job Change Model");
 			}
-
+			
 			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청 //
 		}
 		return RET_ERROR;
-
+		
 	}
+
 	st_handler.n_bSendHeatSink = FALSE;
 	//	::PostMessage(st_handler.hWnd, WM_WORK_COMMAND, MAIN_VISION_SEND, HEATSINK_CJ);
 	Func.OnSet_Vision_send(HEATSINK_CJ);

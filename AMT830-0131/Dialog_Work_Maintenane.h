@@ -39,6 +39,10 @@
 #define G_ON	(RGB(0, 255, 0))
 #define G_OFF	(RGB(0, 162, 0))
 
+#define LMAX_LINE 500
+#define LMAX_SIZE 500
+
+
 #define FLICK	(RGB(190, 220, 255))
 #include "Ctlbd_Variable.h"	// Added by ClassView
 
@@ -73,12 +77,27 @@ public:
 	void OnMaintenance_Red_State_Change(int idx);
 	void DrawButton(int i);
 	void OnMaintenance_GroupBox_Set();
+
+	void RegModel();
+	void OnDisplay(int nCboMdl);
+	void LineAnalysis();
+	void LineCut(BYTE* buffer);
+	int FileWrite(CString strFileName, CString strContent);
+	int FileRead(CString strFileName);
+	int SaveValue(CString strFileName, CString itemName, CString itemValue);
+
+
 	CDialog_Work_Maintenane(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 public:
 	//{{AFX_DATA(CDialog_Work_Maintenane)
 	enum { IDD = IDD_WORK_MAINTENACE };
+	CListBox	m_lstboxtxt;
+	CEdit	m_edit_mdl;
+	CComboBox	m_cbo_model;
+	CXPGroupBox m_group_newgmodel;
+	CXPGroupBox m_group_regmodel;
 	CButtonST	m_chk_hs_rear;
 	CButtonST	m_chk_hs_front;
 	CXPGroupBox	m_group_hs;
@@ -168,6 +187,15 @@ public:
 	CString mstr_equip_id[2];
 	int mn_lamp_change_time[2];
 
+	CString m_strModelPath;
+	CString strLineInfo[LMAX_LINE];
+	CString strItemName[LMAX_LINE];
+	CString strItemValue[LMAX_LINE];
+	int m_nMdlTotal;
+	CString m_strModelName[100];
+	int m_nCboSelModel;
+	int nItemLength;
+	CString strModel[50][500];
 
 
 private:
@@ -215,6 +243,10 @@ protected:
 	afx_msg void OnBtnStepSave();
 	afx_msg void OnChkHsFront();
 	afx_msg void OnChkHsRear();
+	afx_msg void OnBtnDelete();
+	afx_msg void OnButtonSave();
+	afx_msg void OnButton1();
+	afx_msg void OnSelchangeComboModel();
 	//}}AFX_MSG
 	afx_msg void OnRLampClick(UINT);
 	afx_msg void OnYLampClick(UINT);

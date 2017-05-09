@@ -111,6 +111,10 @@ int CComizoaPublic::Initialize_MotBoard(CString s_file) //보드 초기화
 //1. 커미조아 라이브러리를 응용프로그램 공간에 로딩한다 
 //2. 모터보드(하드웨어)를 로그하고 장치를 초기화 한다   
 //3. 모터 스피드를 셋팅한다 cmmCfgSetSpeedPattern(nAxis, nSpeedMode, d_work, d_accel, d_decel);
+	if (mn_simulation_mode == 1)
+	{
+		return BD_GOOD;
+	}
 
 	nRet = cmmLoadDll(); //라이브러리 로드 - 응용 프로그램의 메모리 공간으로 커미조아 라이브러리 로드 
 	if (nRet == TRUE)	//TRUE    1
@@ -175,6 +179,10 @@ int CComizoaPublic::Set_Simulation_Mode(int n_axis, int n_simul_mode)
 {
 //	n_simul_mode => 0:시뮬레이션 모드 비활성, 1:시뮬레이션 모드 활성
 
+	if( mn_simulation_mode == 1 )
+	{
+		return BD_GOOD;
+	}
 	cmmGnSetSimulMode(n_axis, n_simul_mode);//cmCTRL_SEMI_C , 엔코더,(피드백기준) 기준으로 목표좌표를 설정하여 이송합니다
 	return BD_GOOD;
 } 
@@ -185,6 +193,10 @@ int CComizoaPublic::Set_CMD_CTL_Mode(int n_axis, int n_cmd_type)
 //	cmCTRL_OPEN, // Open loop control mode
 //	cmCTRL_SEMI_C, // Semi-closed loop control mode (applied only to absolute in-position commands)
 //	cmCTRL_FULL_C // Full-closed loop control mode (this is not supported at current version)
+	if( mn_simulation_mode == 1 )
+	{
+		return BD_GOOD;
+	}
 
 	cmmCfgSetCtrlMode(n_axis, n_cmd_type);//cmCTRL_SEMI_C , 엔코더,(피드백기준) 기준으로 목표좌표를 설정하여 이송합니다
 	return BD_GOOD;
@@ -204,6 +216,11 @@ typedef enum _TCmMioPropId{
 }TCmMioPropId;
 */
 	//CMM_EXTERN long (WINAPI *cmmCfgSetMioProperty)	(long Axis, long PropId, long PropVal);
+
+	if (mn_simulation_mode == 1)
+	{
+		return BD_GOOD;
+	}
 
 	//우선 InPosition On/Off 기능을 사용한다 
 	nRet = cmmCfgSetMioProperty(n_Axis, n_PropId, n_OnOff);
@@ -232,6 +249,11 @@ int CComizoaPublic::Set_MotPower(int n_Axis, int n_OnOff)
 {
 	int nRet = -1, nRet_2=BD_ERROR;
 	double dCurrentPos = 0, dGetPos = 0; 	
+
+	if (mn_simulation_mode == 1)
+	{
+		return BD_GOOD;
+	}
 
 	nRet = cmmGnSetServoOn(n_Axis, n_OnOff);
 	if (nRet == cmERR_NONE)
@@ -822,6 +844,10 @@ int CComizoaPublic::Get_MotIOSensor(int n_Axis, int n_MotSensor, int n_OnOff)
 
 int CComizoaPublic::Set_MotInitSpeed(int n_Axis, double d_work)
 {
+	if (mn_simulation_mode == 1)
+	{// 
+		return BD_GOOD;
+	}
 	cmmSxOptSetIniSpeed(n_Axis, d_work);
 	return BD_GOOD;
 }
@@ -936,6 +962,11 @@ int CComizoaPublic::Set_MotUnitSpeed(int n_Axis, double n_UnitSpeed) //2011.1104
 	// cmmCfgSetSpeedPattern(n_axis, cmSMODE_C, 50, 0,0);
 	// cmmSxMove(n_axis, 10); //50mm/sec의 속도로 10mm 이동
 	
+	if( mn_simulation_mode == 1 )
+	{
+		return BD_GOOD;
+	}
+	
 	
 	nFlag = cmmCfgSetUnitSpeed(n_Axis, n_UnitSpeed);
 	if (nFlag == cmERR_NONE) 
@@ -968,6 +999,11 @@ int CComizoaPublic::Set_MotSpeed(int n_SpeedCase, int n_Axis, int n_SpeedMode, d
 	double dVel = 0, dAccPPS = 0, dDecPPS = 0;
 	double dAccTime = 0, dDecTime = 0;	
 	int nLimit_Time = 1;
+
+	if( mn_simulation_mode == 1 )
+	{
+		return BD_GOOD;
+	}
 
 	//n_SpeedCase => MOT_SPD_CM_CTL:속도를 cm로 제어한다, MOT_SPD_RPM_CTL: 속도를 rpm으로 제어 
 
@@ -1205,6 +1241,12 @@ int CComizoaPublic::Set_MotSpeed_Ratio(int n_Axis, int n_SpeedMode, double d_wor
 int CComizoaPublic::Set_MotUnitDist(int n_Axis, double n_UnitDist)
 {
 	int  nRet = BD_ERROR, nFlag = 0;
+
+	if( mn_simulation_mode == 1 )
+	{
+		return BD_GOOD;
+	}
+	
 	
 	nFlag = cmmCfgSetUnitDist(n_Axis, n_UnitDist);
 	if (nFlag == cmERR_NONE) 

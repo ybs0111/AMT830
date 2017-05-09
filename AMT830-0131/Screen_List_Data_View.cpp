@@ -126,6 +126,11 @@ void CScreen_List_Data_View::OnInitialUpdate()
 
 void CScreen_List_Data_View::OnDestroy() 
 {
+	if( mp_mainfont != NULL)
+	{
+		delete mp_mainfont;
+		mp_mainfont = NULL;
+	}
 	CFormView::OnDestroy();
 }
 

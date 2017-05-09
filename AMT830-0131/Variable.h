@@ -2912,6 +2912,13 @@ struct st_work_param
 	DWORD m_dLotStartTime;
 	long mn_output_dvc;
 
+	int m_nMdlTotal;
+	int m_nCboSelModel;
+	CString m_strModelName[100];
+	CString m_strCurModel;
+	int m_nNmModel;//ahepfaud
+	CStringList m_strModel[50][200];//[m_nNmModel][Partnum]
+
 } ;
 extern  st_work_param  st_work;
 

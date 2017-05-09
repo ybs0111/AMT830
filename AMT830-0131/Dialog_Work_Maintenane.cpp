@@ -34,6 +34,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+
+
 /////////////////////////////////////////////////////////////////////////////
 // CDialog_Work_Maintenane dialog
 
@@ -51,6 +53,11 @@ void CDialog_Work_Maintenane::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CDialog_Work_Maintenane)
+	DDX_Control(pDX, IDC_LIST1, m_lstboxtxt);
+	DDX_Control(pDX, IDC_EDIT1, m_edit_mdl);
+	DDX_Control(pDX, IDC_COMBO_MODEL, m_cbo_model);
+	DDX_Control(pDX, IDC_GROUP_NEW_MODEL, m_group_newgmodel);
+	DDX_Control(pDX, IDC_GROUP_REG_MODEL, m_group_regmodel);
 	DDX_Control(pDX, IDC_CHK_HS_REAR, m_chk_hs_rear);
 	DDX_Control(pDX, IDC_CHK_HS_FRONT, m_chk_hs_front);
 	DDX_Control(pDX, IDC_GROUP_HEAT_SINK, m_group_hs);
@@ -109,6 +116,10 @@ BEGIN_MESSAGE_MAP(CDialog_Work_Maintenane, CDialog)
 	ON_BN_CLICKED(IDC_BTN_STEP_SAVE, OnBtnStepSave)
 	ON_BN_CLICKED(IDC_CHK_HS_FRONT, OnChkHsFront)
 	ON_BN_CLICKED(IDC_CHK_HS_REAR, OnChkHsRear)
+	ON_BN_CLICKED(IDC_BTN_DELETE, OnBtnDelete)
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, OnButtonSave)
+	ON_BN_CLICKED(IDC_BUTTON1, OnButton1)
+	ON_CBN_SELCHANGE(IDC_COMBO_MODEL, OnSelchangeComboModel)
 	//}}AFX_MSG_MAP
 	ON_COMMAND_RANGE(ID_LAMP_RLAMP, ID_LAMP_RLAMP+SELFCHECK, OnRLampClick)
 	ON_COMMAND_RANGE(ID_LAMP_YLAMP, ID_LAMP_YLAMP+SELFCHECK, OnYLampClick)
@@ -500,6 +511,7 @@ BOOL CDialog_Work_Maintenane::OnInitDialog()
 	OnMaintenance_Hs_Change();//2016.0516
 
 
+	RegModel();
 
 	st_handler.cwnd_maintenance = this;  // Tower Lamp 화면에 대한 핸들 정보 설정 
 	return TRUE;
@@ -1841,4 +1853,284 @@ void CDialog_Work_Maintenane::OnChkHsRear()
 	else									mn_rear_mode[1] = FALSE;
 	
 	OnMaintenance_Hs_Change();	
+}
+
+void CDialog_Work_Maintenane::OnBtnDelete() 
+{
+	m_lstboxtxt.DeleteString(m_lstboxtxt.GetCaretIndex());
+	
+}
+
+void CDialog_Work_Maintenane::OnButtonSave() 
+{
+	CString strFilePath, strMdlFile, strFileName, strNum;
+	int nIndex = m_lstboxtxt.GetCount();
+	
+	m_cbo_model.GetWindowText(strFileName);
+	m_cbo_model.GetLBText(m_nCboSelModel, strFileName);
+	
+	CString mstr_temp;
+	mstr_temp.Format("%d",nIndex);
+	strFilePath = "C:\\AMT830\\Setting\\ModelName\\" + strFileName + _T(".TXT");
+	DeleteFile(strFilePath);
+	
+	:: WritePrivateProfileString(strFileName, "Total", LPCTSTR(mstr_temp), strFilePath);
+	
+	for (int i = 0; i < nIndex; i++)
+	{
+		m_lstboxtxt.GetText(i, strMdlFile);
+		strNum.Format("%d",i+1);
+		:: WritePrivateProfileString(strFileName, strNum, LPCTSTR(strMdlFile), strFilePath);
+	}	
+}
+
+//////////////////////////////////////////////////////////////////////////
+//2017.0429
+void CDialog_Work_Maintenane::RegModel()
+{
+	m_nCboSelModel = 0;
+	Func.LoadRegModelData();
+	CString strCbomo="";
+	
+	m_cbo_model.ResetContent();
+	
+	for (int i= 0; i < st_work.m_nMdlTotal; i++ )
+	{
+		strCbomo.Format("%s", st_work.m_strModelName[i]);
+		strCbomo.TrimLeft(); strCbomo.TrimRight();
+		m_cbo_model.AddString( (LPCTSTR)strCbomo);
+		Func.ModelFileload(strCbomo);
+		if(Func.nItemLength > 0) 
+		{
+			for (int ii = 0; ii < Func.nItemLength; ii++)
+			{
+				strModel[i][ii] = Func.m_strItemValue[ii];
+			}
+		}
+		
+	}
+	OnDisplay(m_nCboSelModel);
+}
+
+void CDialog_Work_Maintenane::OnDisplay(int nCboMdl)
+{
+	
+	CString strCbomo;
+	
+	nItemLength = 0;
+	strCbomo.Format("%s", st_work.m_strModelName[nCboMdl]);
+	strCbomo.TrimLeft(); strCbomo.TrimRight();
+	// 	m_cbo_model.AddString( (LPCTSTR)strCbomo);
+	Func.ModelFileload(strCbomo);
+	for(int i = 0; i < LMAX_LINE; i++)  
+	{
+		strModel[nCboMdl][i].Empty();
+	}
+	if(Func.nItemLength > 0) 
+	{
+		for (int ii = 0; ii < Func.nItemLength; ii++)
+		{
+			strModel[nCboMdl][ii] = Func.m_strItemValue[ii];
+		}
+	}
+	
+	m_cbo_model.SetCurSel(m_nCboSelModel);	
+	
+	
+	if(strModel[m_nCboSelModel][0].GetLength() > 0)
+	{
+		int i = 0;
+		do 
+		{
+			m_lstboxtxt.AddString(strModel[m_nCboSelModel][i]);
+			i++;
+		} while (strModel[m_nCboSelModel][i].GetLength() > 0);
+		
+	}
+	
+}
+
+void CDialog_Work_Maintenane::LineAnalysis()
+{
+	unsigned short getAscii = 0;
+	CString strTmp;
+	int length, find;
+	
+	for(int i = 0 ; i < nItemLength ; i++)
+	{
+		length = strLineInfo[i].GetLength();
+		find = strLineInfo[i].Find('=', 0);
+		strItemName[i] = strLineInfo[i].Left(find);
+		strItemName[i].TrimRight();
+		strItemValue[i] = strLineInfo[i].Right(length - (find + 1));
+		strItemValue[i].TrimLeft();
+		strItemValue[i].TrimRight();
+	}
+}
+
+void CDialog_Work_Maintenane::LineCut(BYTE* buffer)
+{
+	CString strBuffer, strGetchar, strTmp;
+	int length;
+	unsigned short getAscii = 0;
+	
+	nItemLength = 0;
+	strBuffer = buffer;
+	length = strBuffer.GetLength();
+	
+	for(int i = 0 ; i < length ; i++)
+	{
+		getAscii = strBuffer.GetAt(i);
+		strGetchar.Format("%c", getAscii);
+		strTmp = strTmp + strGetchar;
+		if(getAscii == 10)
+		{
+			strLineInfo[nItemLength++] = strTmp;
+			strTmp = "";
+		}
+	}
+	LineAnalysis();
+}
+
+int CDialog_Work_Maintenane::FileWrite(CString strFileName, CString strContent)
+{
+	int nResult;
+	//	::WaitForSingleObject(m_hMutex,100);
+	
+// 	CThreadSync Sync;
+	
+	if(strFileName.IsEmpty())
+	{
+		nResult = -1;
+	}
+	
+	else
+	{
+		CFile file;
+		
+		TRY
+		{
+			if(file.Open(strFileName, CFile::modeWrite | CFile::modeCreate|CFile::shareDenyNone) == TRUE)
+			{
+				file.Write(strContent, strContent.GetLength());
+				file.Close();
+				nResult = 1;
+				
+			}
+		}
+		
+		CATCH (CFileException, e)
+		{
+			AfxMessageBox("화일 저장 실패");
+			file.Close();
+			nResult = -2;
+		}
+		END_CATCH
+	}
+	
+	//	::ReleaseMutex(m_hMutex);
+	return nResult;
+}
+
+int CDialog_Work_Maintenane::FileRead(CString strFileName)
+{
+
+	int nResult;
+	
+	// CString의 배열값 초기화.
+	
+	for(int i = 0; i < LMAX_LINE; i++)  
+	{
+		strLineInfo[i].Empty();
+		strItemName[i].Empty();
+		strItemValue[i].Empty();
+	}
+	
+	
+	if(strFileName.IsEmpty())
+	{
+		nResult = -1;
+	}
+	else
+	{
+		TRY
+		{
+			BYTE buffer[LMAX_SIZE];
+			
+			for(int i=0; i<LMAX_SIZE; i++)
+				buffer[i] = NULL;
+			
+			CFile file(_T(strFileName), CFile::modeReadWrite|CFile::shareDenyNone);
+			DWORD dwBytesRemaining = file.GetLength();
+			
+			while(dwBytesRemaining)
+			{
+				UINT nBytesRead = file.Read(buffer, sizeof(buffer));
+				dwBytesRemaining -= nBytesRead;
+			}
+			
+			file.Close();
+			LineCut(&buffer[0]);
+			nResult =1;
+		}
+		CATCH(CFileException, e)
+		{
+			return -2;
+		}
+		END_CATCH
+	}
+	
+	return nResult;
+}
+
+int CDialog_Work_Maintenane::SaveValue(CString strFileName, CString itemName, CString itemValue)
+{
+	FileRead(strFileName);
+	
+	CString strFind, strContent, strTmp;
+	int chk = 0;
+	
+	for(int uuu = 0 ; uuu < nItemLength ; uuu++)
+	{
+		if(strItemName[uuu] == itemName)
+		{
+			chk = 1;
+			strItemValue[uuu] = itemValue;
+			strLineInfo[uuu].Format("%s=%s\r\n", itemName, itemValue);
+		}
+		
+		strContent += strLineInfo[uuu];
+	}
+	
+	if(chk)
+	{
+		FileWrite(strFileName, strContent);
+		return 1;
+	}
+	else
+		return -1;
+}
+
+void CDialog_Work_Maintenane::OnButton1() 
+{
+	CString strTest="",strLeft="";
+	m_edit_mdl.GetWindowText(strTest);
+	UpdateData(TRUE);
+	strTest.TrimLeft(); strTest.TrimRight();
+	strTest.TrimLeft(' '); strTest.TrimRight(' ');
+	if(strTest == "") return;
+	strLeft = strTest.Left(5);
+	m_lstboxtxt.AddString(strLeft);	
+}
+
+void CDialog_Work_Maintenane::OnSelchangeComboModel() 
+{
+	int nIndex = m_lstboxtxt.GetCount();
+	
+	
+	m_lstboxtxt.ResetContent();   // 리스트 박스 컨트롤에 추가된 모든 데이터 삭제 
+	//	m_lstboxtxt.DeleteString()
+	
+	m_nCboSelModel = m_cbo_model.GetCurSel();	
+	OnDisplay(m_nCboSelModel);
 }

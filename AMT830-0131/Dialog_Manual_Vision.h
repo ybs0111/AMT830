@@ -96,6 +96,7 @@ public:
 	//{{AFX_VIRTUAL(CDialog_Manual_Vision)
 	public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL DestroyWindow();
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL

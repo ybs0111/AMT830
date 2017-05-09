@@ -310,7 +310,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	st_handler.cwnd_list = &m_wndListBar;
 	// **************************************************************************
 
-	st_handler.mstr_handler_name = "AMT830";
+	if( FAS_IO.mn_simulation_mode == 1 || COMI.mn_simulation_mode == 1)
+		st_handler.mstr_handler_name = "AMT830_Simulation_SW";
+	else
+		st_handler.mstr_handler_name = "AMT830";
+
 	st_handler.mstr_handler_version = "Ver 1.0.2";
 	str_temp = _T("2016,0516");
 	st_handler.mstr_handler_date = str_temp;
@@ -2167,7 +2171,9 @@ void CMainFrame::OnMain_Motor_Setting()
 
 	for (i = 0; i < MOT_MAXMOTOR; i++)
 	{
-		cmmCfgSetCtrlMode(i, cmCTRL_SEMI_C);//cmCTRL_SEMI_C , 엔코더,(피드백기준) 기준으로 목표좌표를 설정하여 이송합니다
+		//cmmCfgSetCtrlMode(i, cmCTRL_SEMI_C);//cmCTRL_SEMI_C , 엔코더,(피드백기준) 기준으로 목표좌표를 설정하여 이송합니다
+		//2017.0429
+		COMI.Set_CMD_CTL_Mode(i, cmCTRL_SEMI_C);//cmCTRL_SEMI_C , 엔코더,(피드백기준) 기준으로 목표좌표를 설정하여 이송합니다
 	}
 
 	for (i = 0; i < MOT_MAXMOTOR; i++)
@@ -2197,15 +2203,19 @@ void CMainFrame::OnMain_Motor_Setting()
 	//MinPPS = MaxPPS / 65,535
 	//예를 들어서 MaxPPS 가 655,350 이면 MinPPS = 655,350 / 65,535 = 10 (PPS)이 됩니다.
 	/////////////////////////////////////////////////////////////////////////////////////////
-	cmmCfgSetSpeedRange(M_M_RBT_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_HS_F_RBT_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_HS_B_RBT_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_M_CLAMP_RBT_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_RBT_SORTER_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_RBT_UNLOAD_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_LABEL_ATTACH_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_VISION1_Z, 1000000); 
-	cmmCfgSetSpeedRange(M_VISION2_Z, 1000000); 
+	//2017.0429
+	if (COMI.mn_simulation_mode != 1)
+	{
+		cmmCfgSetSpeedRange(M_M_RBT_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_HS_F_RBT_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_HS_B_RBT_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_M_CLAMP_RBT_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_RBT_SORTER_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_RBT_UNLOAD_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_LABEL_ATTACH_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_VISION1_Z, 1000000); 
+		cmmCfgSetSpeedRange(M_VISION2_Z, 1000000); 
+	}
 
 	COMI.Set_MotInitSpeed(M_LDM_STACKER_1,  10); 
 	COMI.Set_MotInitSpeed(M_LDM_STACKER_2,  10);

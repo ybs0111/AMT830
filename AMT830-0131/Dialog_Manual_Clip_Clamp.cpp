@@ -3866,3 +3866,24 @@ void CDialog_Manual_Clip_Clamp::OnButtonControl(BOOL b_flag)
 
 
 
+
+BOOL CDialog_Manual_Clip_Clamp::DestroyWindow() 
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if( m_p_font != NULL)
+	{
+		delete m_p_font;
+		m_p_font = NULL;
+	}
+	if( m_load_combo_font != NULL)
+	{
+		delete m_load_combo_font;
+		m_load_combo_font = NULL;
+	}
+	if( m_motor_font != NULL)
+	{
+		delete m_motor_font;
+		m_motor_font = NULL;
+	}	
+	return CDialog::DestroyWindow();
+}

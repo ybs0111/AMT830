@@ -113,6 +113,12 @@ public:
 
 	int mn_retry;
 
+	int nItemLength;
+	int nMdl;
+	CString m_strModel[100][500];
+	CString m_strItemValue[500];
+
+
 	CMainFrame						*pMainFrm;
 	CMyBasicData     mcls_m_basic;		// 기본 셋팅 정보 로딩 및 저장 클래스
 	
@@ -314,6 +320,15 @@ public:
 	int Handler_Recovery_Varible_Data(int n_mode, int n_site, int n_debug );//2014,1210
 	//2015.0129
 	void OnWriteProduct();
+
+
+	/////////////////////////////////////////////////////////////////////////////////
+	//2017.0428
+	int LoadRegModelData();
+	int GetModelNumFromModel( CString strModel);
+	int GetModelFromPartID( CString PartID, CString& strModel);
+	int ModelFileload(CString strMdl);
+	/////////////////////////////////////////////////////////////////////////////////
 
 private:
 	int AreaSensor_Time[MOT_MAXMOTOR][3];
