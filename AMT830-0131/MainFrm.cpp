@@ -218,6 +218,9 @@ CMainFrame::CMainFrame()
 	st_handler.lTimeTable[0] = GetCurrentTime();					// Time DB에 저장하기 위함.
 	st_timedb.mnSectionBuffer = dSTOP;
 
+// 	FAS_IO.mn_simulation_mode = 1; //ybs 2013,0508 
+// 	COMI.mn_simulation_mode = 1; //ybs 2013,0508
+
 	FAS_IO.mn_simulation_mode = 0; //ybs 2013,0508 
 	COMI.mn_simulation_mode = 0; //ybs 2013,0508
 
