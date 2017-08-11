@@ -1777,7 +1777,7 @@ void CRun_Rbt_Work_Buffer::Run_Worker_Buffer2()
 		break;
 
 	case 2600:
-		if(st_sync.n_module_ldrbt_to_work[LDMODULE_SITE][WORK_BUFFER_2][1] == CTL_COMPLETE)
+		if( st_sync.n_module_ldrbt_to_work[LDMODULE_SITE][WORK_BUFFER_2][1] == CTL_COMPLETE)
 		{
 			mn_retry = 0;
 			FAS_IO.OnCylinderAction(st_io.o_buf2_m_clamp_onoff, IO_OFF);

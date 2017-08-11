@@ -1807,9 +1807,10 @@ void CRun_Rbt_VisionLabel::Run_Label()
 		{
 			//550704 1 55 "Label Picker에 Lable을 제거해 주세요."
 			// 20140224
-			sprintf(mc_alarmcode,"550704");
-			st_work.mn_run_status = CTL_dWARNING;
-			CTL_Lib.Alarm_Error_Occurrence(3523, CTL_dWARNING, mc_alarmcode);
+			//2017.0731
+			//sprintf(mc_alarmcode,"550704");
+			//st_work.mn_run_status = CTL_dWARNING;
+			//CTL_Lib.Alarm_Error_Occurrence(3523, CTL_dWARNING, mc_alarmcode);
 			Run_labelStep = 87;
 		}
 		else
@@ -1915,6 +1916,14 @@ void CRun_Rbt_VisionLabel::Run_Label()
 		break;
 
 	case 92:
+
+		if(st_sync.n_lotend_module_vision[VISION_1_SITE] == CTL_YES &&
+			st_sync.n_lotend_module_vision[VISION_2_SITE] == CTL_YES)
+		{
+			break;
+		}
+
+
 		if (st_picker.n_vision_eable[0] == TRUE)
 		{
 			if(st_handler.mn_jobComplete == YES)
@@ -1925,9 +1934,12 @@ void CRun_Rbt_VisionLabel::Run_Label()
 			}
 			else
 			{
-				//992002 0 99 "BCR Job선택을 하지 못했습니다."
-				sprintf(mc_alarmcode,"992002");
-				CTL_Lib.Alarm_Error_Occurrence(2527, CTL_dWARNING, mc_alarmcode);
+				if( st_work.mn_lot_start == CTL_YES )
+				{
+					//992002 0 99 "BCR Job선택을 하지 못했습니다."
+					sprintf(mc_alarmcode,"992002");
+					CTL_Lib.Alarm_Error_Occurrence(2527, CTL_dWARNING, mc_alarmcode);
+				}
 			}	
 		}
 		else
@@ -2746,24 +2758,33 @@ void CRun_Rbt_VisionLabel::Run_Label()
 		break;
 
 	case 3000:
-		if(st_sync.n_ldrbt_visionrbt_req[1] == VISION_1_SITE)
+		if(st_sync.n_lotend_module_vision[VISION_1_SITE] == CTL_YES &&
+			st_sync.n_lotend_module_vision[VISION_2_SITE] == CTL_YES)
 		{
-			if(st_sync.n_visionrbt_label_req[0] == CTL_REQ)
-			{
-				//n_visionrbt_label_req[0] = CTL_READY;
-				m_dTargetLabel = st_motor[M_LABEL_ATTACH_Z].md_pos[Z_LABEL_ATTACH_POS1] + md_offset;
-				Run_labelStep = 3010;
-			}
+			Run_labelStep = 0;
 		}
 		else
 		{
-			if(st_sync.n_visionrbt_label_req[0] == CTL_REQ)
+			if(st_sync.n_ldrbt_visionrbt_req[1] == VISION_1_SITE)
 			{
-				//n_visionrbt_label_req[0] = CTL_READY;
-				m_dTargetLabel = st_motor[M_LABEL_ATTACH_Z].md_pos[Z_LABEL_ATTACH_POS2] + md_offset;
-				Run_labelStep = 3010;
+				if(st_sync.n_visionrbt_label_req[0] == CTL_REQ)
+				{
+					//n_visionrbt_label_req[0] = CTL_READY;
+					m_dTargetLabel = st_motor[M_LABEL_ATTACH_Z].md_pos[Z_LABEL_ATTACH_POS1] + md_offset;
+					Run_labelStep = 3010;
+				}
+			}
+			else
+			{
+				if(st_sync.n_visionrbt_label_req[0] == CTL_REQ)
+				{
+					//n_visionrbt_label_req[0] = CTL_READY;
+					m_dTargetLabel = st_motor[M_LABEL_ATTACH_Z].md_pos[Z_LABEL_ATTACH_POS2] + md_offset;
+					Run_labelStep = 3010;
+				}
 			}
 		}
+
 		break;
 
 	case 3010://2015.0131
@@ -3597,8 +3618,8 @@ if(st_sync.n_ldrbt_visionrbt_req[0] == CTL_REQ)
 		{
 			if(nRet_1 == CTLBD_RET_ERROR)
 			{
-				st_work.mn_run_status = CTL_dWARNING;
-				CTL_Lib.Alarm_Error_Occurrence(2542, st_work.mn_run_status, COMI.mc_alarmcode);
+//				st_work.mn_run_status = CTL_dWARNING;
+//				CTL_Lib.Alarm_Error_Occurrence(2542, st_work.mn_run_status, COMI.mc_alarmcode);
 				mn_VisionStep[nSite] = 4200;
 				COMI.Set_MotStop( 0, nMotor_Y);//2016.0523
 				CTL_Lib.mn_single_motmove_step[nMotor_Y] = 0;
@@ -3727,8 +3748,8 @@ if(st_sync.n_ldrbt_visionrbt_req[0] == CTL_REQ)
 		}
 		else if (nRet_1 != CTLBD_RET_PROCEED)
 		{
-			st_work.mn_run_status = CTL_dWARNING;
-			CTL_Lib.Alarm_Error_Occurrence(2547, st_work.mn_run_status, COMI.mc_alarmcode);
+			//st_work.mn_run_status = CTL_dWARNING;
+			//CTL_Lib.Alarm_Error_Occurrence(2547, st_work.mn_run_status, COMI.mc_alarmcode);
 			mn_VisionStep[nSite] = 5000;
 		} 
 		break; 
@@ -4069,8 +4090,17 @@ if(st_sync.n_ldrbt_visionrbt_req[0] == CTL_REQ)
 
 	case 10000:
 		st_sync.n_lotend_module_vision[nSite] = CTL_YES;
-		mn_VisionStep[nSite] = 0;
+		mn_VisionStep[nSite] = 11000;
 		break;
+
+	case 11000:
+		if( st_work.n_lotend == CTL_NO && st_sync.n_lotend_module_vision[TOPBUFFER] == CTL_NO &&
+			st_sync.n_lotend_module_vision[BTMBUFFER] == CTL_NO )
+		{
+			mn_VisionStep[nSite] = 0;
+		}
+		break;
+
 	}
 }
 
@@ -4632,8 +4662,8 @@ if(st_sync.n_ldrbt_visionrbt_req[0] == CTL_REQ)
 		{
 			if(nRet_1 == CTLBD_RET_ERROR)
 			{
-				st_work.mn_run_status = CTL_dWARNING;
-				CTL_Lib.Alarm_Error_Occurrence(2567, st_work.mn_run_status, COMI.mc_alarmcode);
+//				st_work.mn_run_status = CTL_dWARNING;
+//				CTL_Lib.Alarm_Error_Occurrence(2567, st_work.mn_run_status, COMI.mc_alarmcode);
 				mn_VisionStep[nSite] = 4200;
 				COMI.Set_MotStop( 0, nMotor_Y);//2016.0523
 				CTL_Lib.mn_single_motmove_step[nMotor_Y] = 0;
@@ -5104,7 +5134,15 @@ if(st_sync.n_ldrbt_visionrbt_req[0] == CTL_REQ)
 
 	case 10000:
 		st_sync.n_lotend_module_vision[nSite] = CTL_YES;
-		mn_VisionStep[nSite] = 0;
+		mn_VisionStep[nSite] = 11000;
+		break;
+
+	case 11000:
+		if( st_work.n_lotend == CTL_NO && st_sync.n_lotend_module_vision[TOPBUFFER] == CTL_NO &&
+			st_sync.n_lotend_module_vision[BTMBUFFER] == CTL_NO )
+		{
+			mn_VisionStep[nSite] = 0;
+		}
 		break;
 	}
 }

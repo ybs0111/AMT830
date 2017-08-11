@@ -48,6 +48,7 @@ CScreen_Basic::CScreen_Basic()
 {
 	//{{AFX_DATA_INIT(CScreen_Basic)
 	//}}AFX_DATA_INIT
+	st_handler.nModelChangeCheck = FALSE; 
 }
 
 CScreen_Basic::~CScreen_Basic()
@@ -2070,6 +2071,9 @@ LRESULT CScreen_Basic::OnBasic_Info_Apply(WPARAM wParam, LPARAM lParam)
 
 void CScreen_Basic::OnBasic_Data_Apply()
 {
+	int n_response;
+	CDialog_Message msg_dlg;
+
 	((CEdit*)GetDlgItem(IDC_EDIT_DEVICE_TYPE))->GetWindowText(mstr_temp_device);
 	mstr_temp_device.MakeUpper();
 	mstr_temp_device.TrimLeft(' ');               
@@ -2077,6 +2081,24 @@ void CScreen_Basic::OnBasic_Data_Apply()
 	
 	if (mstr_device_name[0] != mstr_temp_device)
 	{
+		//2017.0810
+		st_handler.nModelChangeCheck = TRUE;
+		st_msg.str_fallacy_msg = _T("[Basic]Model이 변경 되었습니다. 엘리베이터에 Tray가 존재하는지 확인해 주세요.");
+		if(st_handler.mn_language == LANGUAGE_ENGLISH)
+		{
+			st_msg.str_fallacy_msg = _T("[Basic]Model is changed. You have to check that if there is any tray in Elivator.");
+		}
+		sprintf(st_msg.c_normal_msg, "[Basic]Model is changed. You have to check that if there is any tray in Elivator.");
+		if(st_handler.cwnd_list != NULL)
+		{
+			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청 //
+		}
+		n_response = msg_dlg.DoModal();			
+		if (n_response == IDOK)
+		{
+		}
+
+
 		OnBasic_DeviceData_Apply();
 		
 		OnBasic_Data_Set();				// 전역 변수의 Data를 받아온다.

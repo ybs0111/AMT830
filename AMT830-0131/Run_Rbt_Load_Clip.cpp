@@ -1351,7 +1351,18 @@ void CRun_Rbt_Load_Clip::Run_ClipInsertMove()
 
 			if(HeadVal == -1)
 			{
-				RunInsertStep = 1250;
+				for(i=0;i<4;i++)
+				{
+					if(st_sync.n_module_site_status[LDMODULE_SITE][i][0] == BUFF_DVC_LOAD &&
+						st_sync.n_module_site_status[LEFTSINK_SITE][i][0] == BUFF_DVC_LOAD &&
+						st_sync.n_module_site_status[RIGHTSINK_SITE][i][0] == BUFF_DVC_LOAD &&
+						st_sync.n_module_site_status[LDCLIP_SITE][i][0] == BUFF_EMPTY)
+					{
+						HeadVal=i;
+						break;
+					}
+				}
+				if(HeadVal == -1) RunInsertStep = 1250;
 			}
 
 			if(st_work.n_lotend == CTL_YES && Func.ChkForLotEnd(LDCLIP_SITE) == RET_ERROR)
@@ -1466,16 +1477,20 @@ void CRun_Rbt_Load_Clip::Run_ClipInsertMove()
 				st_sync.n_module_ldrbt_to_work[LDCLIP_SITE][HeadVal][0] = CTL_REQ;
 				mn_pre_move_flag = CTL_NO;
 				RunInsertStep = 3000;
+				break;
 			}
 
 		if(HeadVal == -1)
 		{
 			RunInsertStep = 1250;
 		}
-
-		if(st_work.n_lotend == CTL_YES && Func.ChkForLotEnd(LDCLIP_SITE) == RET_ERROR)
+		else if(st_work.n_lotend == CTL_YES && Func.ChkForLotEnd(LDCLIP_SITE) == RET_ERROR)
 		{
 			RunInsertStep = 10000;
+		}
+		else
+		{
+			RunInsertStep = 1250;
 		}
 		
 		break;
@@ -2120,13 +2135,20 @@ void CRun_Rbt_Load_Clip::Run_ModuleClampMove()
 		if(nRet_1 == RET_GOOD)
 		{
 			st_handler.mn_remain_count = st_sync.n_module_buffer_action_site[LDCLIP_SITE][1];
-			st_sync.n_module_ldrbt_clamp_req[0] = CTL_READY;			
-			RunClampStep = 2100;
+			RunClampStep = 2010;
 
 			if(COMI.mn_simulation_mode == 1)
 			{
 				st_ani.nSelectMotPos[M_M_CLAMP_RBT_Z] = 1;
 			}
+		}
+		break;
+
+	case 2010:
+		if( st_sync.n_module_ldrbt_clamp_req[0] = CTL_REQ)
+		{
+			st_sync.n_module_ldrbt_clamp_req[0] = CTL_READY;
+			RunClampStep = 2100;
 		}
 		break;
 

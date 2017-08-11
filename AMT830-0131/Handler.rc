@@ -2807,7 +2807,7 @@ BEGIN
                     37,110
     CONTROL         "",IDC_STATIC_M_LOADER_PICKER,"Static",SS_GRAYRECT | NOT 
                     WS_VISIBLE | WS_DISABLED,15,517,46,25
-    GROUPBOX        "PICKER Status",IDC_GROUP_PICKER_STATUS,10,346,312,50,
+    GROUPBOX        "PICKER Status",IDC_GROUP_PICKER_STATUS,10,378,312,18,
                     NOT WS_VISIBLE | WS_DISABLED
     CTEXT           "Module",IDC_MSG_PICKER_M_STATUS,17,384,42,8,
                     SS_CENTERIMAGE | NOT WS_VISIBLE | WS_DISABLED
@@ -2831,7 +2831,7 @@ BEGIN
                     NOT WS_VISIBLE | WS_DISABLED,270,517,46,25
     CTEXT           "Unloader",IDC_MSG_PICKER_UNLOADER_STATUS,272,384,42,8,
                     SS_CENTERIMAGE | NOT WS_VISIBLE | WS_DISABLED
-    GROUPBOX        "Vision Status",IDC_GROUP_VISION_STATUS,326,346,63,50,
+    GROUPBOX        "Vision Status",IDC_GROUP_VISION_STATUS,326,378,63,19,
                     NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_CUSTOM_VISION_MOTOR,"fpSpread70",NOT WS_VISIBLE | 
                     WS_DISABLED | WS_TABSTOP,332,517,52,25
@@ -2870,7 +2870,7 @@ BEGIN
                     SS_CENTERIMAGE
     PUSHBUTTON      "Vis Cnt Reset",IDC_BTN_VISION_CNT_RESET,818,315,56,18,
                     BS_MULTILINE | NOT WS_VISIBLE | WS_DISABLED
-    PUSHBUTTON      "Init MultiLot",IDC_BTN_MULTILOT_INIT,500,207,56,81,
+    PUSHBUTTON      "Lot Continue.",IDC_BTN_MULTILOT_INIT,500,207,56,81,
                     BS_MULTILINE | WS_DISABLED
     PUSHBUTTON      "Scrap",IDC_BTN_WORK_INFORMATION2,637,460,23,14,BS_FLAT | 
                     NOT WS_VISIBLE
@@ -3016,6 +3016,10 @@ BEGIN
                     IDC_BTN_BARCODE_PRINT_RESET,399,422,77,50,BS_MULTILINE,
                     WS_EX_TRANSPARENT
     GROUPBOX        "Label Reset",IDC_GROUP_LABEL_RESET,393,407,90,77
+    PUSHBUTTON      "MDL TRAY",IDC_BTN_MDL_TRAY2,50,353,36,20,BS_FLAT
+    PUSHBUTTON      "FRONT#2",IDC_BTN_FRONT_TRAY2,132,353,36,20,BS_FLAT
+    PUSHBUTTON      "BACK#2",IDC_BTN_FRONT_BACK2,215,353,36,20,BS_FLAT
+    PUSHBUTTON      "ULD#2",IDC_BTN_FRONT_UNLOAD2,296,353,36,20,BS_FLAT
 END
 
 IDD_DIALOG_WORKER DIALOG DISCARDABLE  0, 0, 311, 234
@@ -4660,6 +4664,29 @@ BEGIN
 END
 
 #endif    // Korean resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 24
+//
+
+IDR_DEFAULT1 24 DISCARDABLE 
+BEGIN
+
+END
+
+#endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

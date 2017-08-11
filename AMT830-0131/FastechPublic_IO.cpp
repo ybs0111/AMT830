@@ -25,6 +25,7 @@ CFastechPublic_IO::CFastechPublic_IO()
 {
 	SafetyAreaStep = 0;
 	n_retry = 0;
+
 }
 
 CFastechPublic_IO::~CFastechPublic_IO()

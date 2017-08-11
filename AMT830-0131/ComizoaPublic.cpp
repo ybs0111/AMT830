@@ -95,6 +95,7 @@ CComizoaPublic::CComizoaPublic()
 		mn_sd_io_property_flag[i] = BD_NO;	//sd io 설정 사용유무 설정 
 		mn_interrupt_flag[i] = BD_NO;        //interrupt 사용 유무 설정 
 	}*/
+
 }
 
 CComizoaPublic::~CComizoaPublic()

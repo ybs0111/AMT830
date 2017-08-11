@@ -2119,7 +2119,7 @@ void CDialog_Work_Maintenane::OnButton1()
 	strTest.TrimLeft(); strTest.TrimRight();
 	strTest.TrimLeft(' '); strTest.TrimRight(' ');
 	if(strTest == "") return;
-	strLeft = strTest.Left(5);
+	strLeft = strTest.Left(12);//strTest.Left(5);
 	m_lstboxtxt.AddString(strLeft);	
 }
 

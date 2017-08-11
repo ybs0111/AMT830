@@ -589,12 +589,16 @@ int CDialog_Lot_Open::OnLotStart_Excution()
 				sprintf(st_msg.c_abnormal_msg, "Complete response BCR Job Req");
 			}
 
-			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청 //
+			if(st_handler.cwnd_list != NULL)
+			{
+				st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청 //
+			}
 
 			n_lotopen_step = 900;
 		}
 		else if(nRet_1 == RET_ERROR)
 		{
+			if(NetworkConnectTime[2] < 10000) break;
 			if(st_handler.cwnd_list != NULL)
 			{  // 리스트 바 화면 존재 //
 				sprintf(st_msg.c_abnormal_msg, "BCR Job Req 응답이 없습니다.");
@@ -813,6 +817,27 @@ int CDialog_Lot_Open::OnLotStart_Excution()
 			FuncRet = RET_GOOD;
 			n_lotopen_step = 0;
 		}
+		//2017.0810
+		if (st_handler.nModelChangeCheck == TRUE)
+		{		
+			st_msg.str_fallacy_msg = _T("Model이 변경 되었습니다. 엘리베이터에 Tray가 존재하는지 확인해 주세요.");
+			if(st_handler.mn_language == LANGUAGE_ENGLISH)
+			{
+				st_msg.str_fallacy_msg = _T("Model is changed. You have to check that if there is any tray in Elivator.");
+			}			
+			sprintf(st_msg.c_normal_msg, "Model is changed. You have to check that if there is any tray in Elivator.");
+			if(st_handler.cwnd_list != NULL)
+			{
+				st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청 //
+			}
+			n_response = msg_dlg.DoModal();			
+			if (n_response == IDOK)
+			{
+			}
+			st_handler.nModelChangeCheck = FALSE;
+		}
+
+
 		break;
 
 	case 5000:

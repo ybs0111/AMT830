@@ -1359,7 +1359,22 @@ void CRun_Rbt_Sorter::Run_Sorter_Move()
 
 		if(HeadVal == -1)
 		{
-			RunSortStep = 1050;
+			for(int i=0;i<4;i++)
+			{
+				if(st_sync.n_module_site_status[LDMODULE_SITE][i][0] == BUFF_DVC_LOAD &&
+					st_sync.n_module_site_status[LEFTSINK_SITE][i][0] == BUFF_DVC_LOAD &&
+					st_sync.n_module_site_status[RIGHTSINK_SITE][i][0] == BUFF_DVC_LOAD &&
+					st_sync.n_module_site_status[LDCLIP_SITE][i][0] == BUFF_DVC_LOAD &&
+					st_sync.n_module_site_status[SORTER_SITE][i][0] == BUFF_EMPTY)
+				{
+					HeadVal=i;
+					break;
+				}
+			}
+			if(HeadVal == -1)
+			{
+				RunSortStep = 1050;
+			}
 		}
 
 		if((st_work.n_loadlot_count[LDMODULE_SITE] >= st_work.nMdlInputCount[0][0]) && st_work.n_lotend == CTL_YES &&
@@ -1601,7 +1616,15 @@ void CRun_Rbt_Sorter::Run_Sorter_Move()
 	
 	case 10000:
 		st_sync.n_lotend_sorter_site = CTL_YES;
-		RunSortStep = 0;
+		RunSortStep = 11000;
+		break;
+
+	case 11000:
+		if( st_work.n_lotend == CTL_NO && st_sync.n_lotend_sorter_site == CTL_NO && st_sync.n_lotend_module_vision[TOPBUFFER] == CTL_NO &&
+			st_sync.n_lotend_module_vision[BTMBUFFER] == CTL_NO )
+		{
+			RunSortStep = 0;
+		}
 		break;
 	}
 }
@@ -1695,11 +1718,11 @@ void CRun_Rbt_Sorter::Run_Unload_Move()
 			st_ani.nSelectMotPos[M_RBT_UNLOAD_Z] = 2;
 		}
 
-		if(st_sync.n_lotend_module_vision[0] == CTL_YES && st_sync.n_lotend_module_vision[1] == CTL_YES)
-		{
-			RunUldStep = 10000;
-			break;
-		}	
+		//if(st_sync.n_lotend_module_vision[0] == CTL_YES && st_sync.n_lotend_module_vision[1] == CTL_YES)
+		//{
+		//	RunUldStep = 10000;
+		//	break;
+		//}	
 		//st_sync.n_vision_buffer_req[SITE_ULDBUFFER][0] = CTL_REQ;
 		mn_pre_move_flag[1] = CTL_NO;
 		RunUldStep = 1010;
@@ -1804,10 +1827,16 @@ void CRun_Rbt_Sorter::Run_Unload_Move()
 			RunUldStep = 10000;
 			break;
 		}
-		else if(st_work.n_lotend != CTL_YES && st_handler.n_lotend_ready == 5 &&  
+//		else if(st_work.n_lotend != CTL_YES && st_handler.n_lotend_ready == 5 &&  
+//			(st_work.nMdlPassCount[0][0] + st_work.nMdlRejectCount[0][0]) >= st_work.n_loadlot_count[LDMODULE_SITE])
+//		{
+//			st_handler.n_lotend_ready = 6;
+//			break;
+//		}//2017.0731
+		else if(st_work.n_lotend != CTL_YES &&  
 			(st_work.nMdlPassCount[0][0] + st_work.nMdlRejectCount[0][0]) >= st_work.n_loadlot_count[LDMODULE_SITE])
 		{
-			st_handler.n_lotend_ready = 6;
+			st_handler.n_lotend_ready = 0;
 			break;
 		}
 		else if(st_handler.n_more_uld_tray == CTL_NO && st_sync.mn_uld_module_sortertray_supply[0] == CTL_NOTREADY)
@@ -2334,8 +2363,16 @@ void CRun_Rbt_Sorter::Run_Unload_Move()
 	
 	case 10000:
 		st_sync.n_lotend_unload_site = CTL_YES;
-		Func.InitNode();
-		RunUldStep = 0;
+//		Func.InitNode();
+		RunUldStep = 11000;
+		break;
+
+	case 11000:
+		if( st_work.n_lotend == CTL_NO && st_sync.n_lotend_unload_site == CTL_NO && st_sync.n_lotend_module_vision[TOPBUFFER] == CTL_NO &&
+			st_sync.n_lotend_module_vision[BTMBUFFER] == CTL_NO )
+		{
+			RunUldStep = 0;
+		}
 		break;
 	}
 

@@ -14281,29 +14281,31 @@ int CPublic_Function::GetModelFromPartID( CString PartID, CString& strModel)
 		
 		if(nFuncRet != RET_GOOD)
 		{
-			for (int i= 0; i < st_work.m_nMdlTotal; i++ )
-			{
-				nItemLength = 0;
-				nRet = ModelFileload(st_work.m_strModelName[i]);
-				if( nRet == RET_GOOD && nItemLength > 0) 
-				{
-					for (int ii = 0; ii < nItemLength; ii++)
-					{
-						m_strModel[i][ii] = m_strItemValue[ii];
-						if(m_strItemValue[ii].Compare( (LPCTSTR)PartID) == 0)
-						{
-							strModel = st_work.m_strModelName[i];
-							nFuncRet = RET_GOOD;
-							if (st_handler.cwnd_list != NULL)  // 리스트 바 화면 존재
-							{
-								sprintf(st_msg.c_normal_msg, "%s Model is different", strModel);
-								st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청
-							}
-							break;
-						}
-					}
-				}
-			}
+			//2017.0811
+			//자동모델등록을 막는다.
+// 			for (int i= 0; i < st_work.m_nMdlTotal; i++ )
+// 			{
+// 				nItemLength = 0;
+// 				nRet = ModelFileload(st_work.m_strModelName[i]);
+// 				if( nRet == RET_GOOD && nItemLength > 0) 
+// 				{
+// 					for (int ii = 0; ii < nItemLength; ii++)
+// 					{
+// 						m_strModel[i][ii] = m_strItemValue[ii];
+// 						if(m_strItemValue[ii].Compare( (LPCTSTR)PartID) == 0)
+// 						{
+// 							strModel = st_work.m_strModelName[i];
+// 							nFuncRet = RET_GOOD;
+// 							if (st_handler.cwnd_list != NULL)  // 리스트 바 화면 존재
+// 							{
+// 								sprintf(st_msg.c_normal_msg, "%s Model is different", strModel);
+// 								st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청
+// 							}
+// 							break;
+// 						}
+// 					}
+// 				}
+// 			}
 		}	
 	}
 	return nFuncRet;
@@ -14491,7 +14493,8 @@ int CPublic_Function::OnHeatSinkModel_Change_Req()
 	CString strname = st_basic.mstr_device_name;
 	strname.Replace(".TXT", "");
 	st_work.m_strCurModel = strname;
-	strPartID = st_NW.mstr_Recive_PartNo[0].Mid(0,5);
+//	strPartID = st_NW.mstr_Recive_PartNo[0].Mid(0,5);
+	strPartID = st_NW.mstr_Recive_PartNo[0].Mid(0,12);
 	nMdl = Func.GetModelFromPartID(strPartID, strModel);
 	if( nMdl != RET_GOOD )
 	{
@@ -14505,13 +14508,36 @@ int CPublic_Function::OnHeatSinkModel_Change_Req()
 			sprintf(st_msg.c_abnormal_msg, "Heat Sink Job Change Model이 없습니다.");
 			if(st_handler.mn_language == LANGUAGE_ENGLISH) 
 			{
-				sprintf(st_msg.c_abnormal_msg, "No Heat Sink Job Change Model");
+				sprintf(st_msg.c_abnormal_msg, "No Heat Sink Job Change Model. Choose model in basic.");
 			}
 			
 			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청 //
 		}
 		return RET_ERROR;
 		
+	}
+
+	if(strModel=="RDIMM")		st_work.n_hsNojob = 3;
+	else if(strModel=="LRDMM")  st_work.n_hsNojob = 2;
+	else if(strModel=="TSV")	st_work.n_hsNojob = 1;
+	else
+	{
+ 		nFuncRet = RET_ERROR; //CTLBD_RET_ERROR  // num1 = 0;//error NRDIMM 002
+ 		//992000 0 99 "BCR Job Change Model이 없습니다."
+ 		//992001 0 99 "Heat Sink Job Change Model이 없습니다."
+ 		sprintf(cJamcode,"992001");
+ 		CTL_Lib.Alarm_Error_Occurrence(5064, CTL_dWARNING, cJamcode);
+ 		if(st_handler.cwnd_list != NULL)
+ 		{  // 리스트 바 화면 존재 //
+ 			sprintf(st_msg.c_abnormal_msg, "Heat Sink Job Change Model이 없습니다.");
+ 			if(st_handler.mn_language == LANGUAGE_ENGLISH) 
+ 			{
+ 				sprintf(st_msg.c_abnormal_msg, "No Heat Sink Job Change Model");
+ 			}
+ 
+ 			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);  // 동작 실패 출력 요청 //
+ 		}
+ 		return RET_ERROR;
 	}
 
 	st_handler.n_bSendHeatSink = FALSE;
@@ -14822,10 +14848,14 @@ int CPublic_Function::OnBCRModel_Change_Rev()
 	if(ml_UntilWaitTime[2] < 0) ml_UntilWaitTime[0] = GetCurrentTime();
 
 	if(st_handler.n_bSendBcr == TRUE)
+	{
 		nFuncRet = RET_GOOD;
-
-	if(ml_UntilWaitTime[2] < 5000) return nFuncRet;
-	else nFuncRet = RET_ERROR;
+	}
+	else
+	{
+		if(ml_UntilWaitTime[2] < 5000) return nFuncRet;
+		else nFuncRet = RET_ERROR;
+	}
 	
 	return nFuncRet;
 }

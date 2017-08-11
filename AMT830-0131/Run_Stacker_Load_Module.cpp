@@ -166,13 +166,13 @@ void CRun_Stacker_Load_Module::Run_Init()
 			dCurrentPos[6] = COMI.Get_MotCurrentPos(M_ULDM_STACKER_1);
 			dCurrentPos[7] = COMI.Get_MotCurrentPos(M_ULDM_STACKER_MOVE);
 			if(dCurrentPos[0] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[1] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[2] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[3] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[4] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[5] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[6] >= 0.0 && dCurrentPos[0] < 0.1 &&
-				dCurrentPos[7] >= 0.0 && dCurrentPos[0] < 0.1)
+				dCurrentPos[1] >= 0.0 && dCurrentPos[1] < 0.1 &&
+				dCurrentPos[2] >= 0.0 && dCurrentPos[2] < 0.1 &&
+				dCurrentPos[3] >= 0.0 && dCurrentPos[3] < 0.1 &&
+				dCurrentPos[4] >= 0.0 && dCurrentPos[4] < 0.1 &&
+				dCurrentPos[5] >= 0.0 && dCurrentPos[5] < 0.1 &&
+				dCurrentPos[6] >= 0.0 && dCurrentPos[6] < 0.1 &&
+				dCurrentPos[7] >= 0.0 && dCurrentPos[7] < 0.1)
 			{
 				st_handler.n_Init_Stacker = CTL_YES;
 				initial_smove = YES;
@@ -702,23 +702,27 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		{
 			if(st_sync.n_lotend_module_ldrbt == CTL_YES)
 			{
-				st_sync.n_lotend_module_ldtray_site = CTL_YES;
-				mn_LeakM_LotEnd[1] = NO;
+				break;
 			}
-			if(mn_LeakM_LotEnd[1] == NO && st_sync.n_lotend_module_ldtray_site == CTL_NO)
-			{				
+			else if(mn_LeakM_LotEnd[1] == NO && st_sync.n_lotend_module_ldtray_site == CTL_NO)
+			{
+				if( st_work.nMdlInputCount[0][0] <= 0 ||
+				  ( st_work.n_loadlot_count[LDMODULE_SITE] >= st_work.nMdlInputCount[0][0]) )
+				{//991001 0 99 "작업할 Lot 개수를 입력하지 않았습니다."
+					break;
+				}
 				RunTransStep = 100;
 			}
 		}
 		break;
 
 	case 100:
-		if(st_sync.n_lotend_module_ldtray_site == CTL_YES) return;
-		//Stacker#1로더 트레이가 준비됐다
-		//먼저 Stacker Move가 안으로 들어가 대기한다.
+//		if(st_sync.n_lotend_module_ldtray_site == CTL_YES) return;
+
+		if(st_sync.n_lotend_module_ldrbt == CTL_YES) return;
+
 		if(st_sync.mn_ld_module_tray_supply[0] == CTL_READY)
 		{
-			RunTransStep = 900;
 			RunTransStep = 1000;
 		}
 		else if (st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY)		// 텅 비었을 경우에...
@@ -727,31 +731,6 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		}
 		break;
 
-		//먼저 Stacker#2로 이동하여 기다린다.
-	case 900:
-		if(mn_stacker_move_flag == CTL_NO)
-		{
-			nRet_1 = CTL_Lib.Single_Move(M_LDM_STACKER_MOVE, st_motor[M_LDM_STACKER_MOVE].md_pos[P_MSTACKER_LD_POS], st_basic.nRunSpeed);
-			if(nRet_1 == BD_GOOD)
-			{
-				mn_stacker_move_flag = CTL_YES;
-				RunTransStep = 1000;
-			}
-			else if (nRet_1 == BD_RETRY)
-			{
-				RunTransStep = 2300;
-			}
-			else if (nRet_1 == BD_ERROR || nRet_1 == BD_SAFETY)
-			{
-				st_work.mn_run_status = dWARNING;
-				CTL_Lib.Alarm_Error_Occurrence(1016, st_work.mn_run_status, COMI.mc_alarmcode);
-			}
-		}
-		else
-		{
-			RunTransStep = 1000;
-		}
-		break;
 		
 	case 1000:
 		//트레이를 올려놓고 기다린다.
@@ -763,6 +742,21 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		break;
 
 	case 1100:
+//		if(st_sync.mn_ld_module_tray_supply[0] == CTL_READY)//SD 대기위치에 있으면
+//		{
+//			st_sync.mn_ld_module_tray_supply[0] = CTL_CHANGE;
+//			RunTransStep = 1200;
+//		}
+//		else if (st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY)		// 텅 비었을 경우에...
+//		{			
+//			RunTransStep = 10000;
+//		}
+		//2017.0731
+//		if(st_sync.n_lotend_module_ldrbt == CTL_YES)
+//		{			
+//			break;
+//		}
+//		else 
 		if(st_sync.mn_ld_module_tray_supply[0] == CTL_READY)//SD 대기위치에 있으면
 		{
 			st_sync.mn_ld_module_tray_supply[0] = CTL_CHANGE;
@@ -789,13 +783,10 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		if (FAS_IO.get_in_bit(st_io.i_m_stacker1_rail_tray_chk, IO_ON) == IO_ON || 
 			mn_stacker_updn_cyliner[M_STACKER_1] == CYLINDER_ON)
 		{
-			//for (i = 0; i < st_traybuffer[LDMODULE_SITE].i_loader_col; i++)
-			//{
-				for (j = 0; j < st_traybuffer[LDMODULE_SITE].i_loader_row; j++)
-				{
-					st_modulemap.LoadTray[0][j] = DVC_YES; 
-				}
-			//}
+			for (j = 0; j < st_traybuffer[LDMODULE_SITE].i_loader_row; j++)
+			{
+				st_modulemap.LoadTray[0][j] = DVC_YES; 
+			}
 			st_sync.mn_ld_module_tray_change[0] = CTL_YES;
 			RunTransStep = 2000;
 		}
@@ -816,18 +807,18 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		}
 		break;
 
-	case 2100:
-		if(st_sync.n_lotend_module_ldstacker_site == CTL_NO)
-		{
-			RunTransStep = 2110;
-		}
-		else
-		{
-			if(st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY)
-			{
-				RunTransStep = 100;
-			}
-		}
+//	case 2100:
+//		if(st_sync.n_lotend_module_ldstacker_site == CTL_NO)
+//		{
+//			RunTransStep = 2110;
+//		}
+//		else
+//		{
+//			if(st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY)
+//			{
+//				RunTransStep = 100;
+//			}
+//		}
 		break;
 
 	case 2110:
@@ -852,8 +843,6 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 					st_modulemap.LoadTray[0][j] = DVC_NO;
 				}
 			//}
-			st_sync.mn_ld_module_tray_change[0] = CTL_NO;
-			st_sync.mn_ld_module_tray_change[1] = CTL_YES;  // 교체할 트레이가 있다
 			if(st_handler.cwnd_main != NULL)
 			{
 				st_handler.cwnd_main->PostMessage(WM_WORK_END, TRAY_INFO, MOT_LOADER_TRAY);			// 피커 정보 
@@ -869,6 +858,9 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		break;
 
 	case 3000:
+		st_sync.mn_ld_module_tray_change[0] = CTL_NO;
+		st_sync.mn_ld_module_tray_change[1] = CTL_YES;  // 교체할 트레이가 있다
+		
 		st_sync.mn_ld_module_tray_supply[1] = CTL_LOCK;
 		RunTransStep = 3100;
 		break;
@@ -944,17 +936,20 @@ void CRun_Stacker_Load_Module::Run_Transfer()
 		break;
 
 	case 11000:
-		if(st_sync.n_lotend_module_ldrbt != CTL_YES)
-		{
-			st_sync.n_lotend_module_ldtray_site = CTL_NO;		// 일단 LOT END를 시키자.
-			mn_LeakM_LotEnd[1] = YES;
-			RunTransStep = 0;
-		}
-		else
-		{
-			st_sync.n_lotend_module_ldtray_site = CTL_YES;		// 일단 LOT END를 시키자.
-			RunTransStep = 100;
-		}
+//		if(st_sync.n_lotend_module_ldrbt != CTL_YES)
+//		{
+//			st_sync.n_lotend_module_ldtray_site = CTL_NO;		// 일단 LOT END를 시키자.
+//			mn_LeakM_LotEnd[1] = YES;
+//			RunTransStep = 0;
+//		}
+//		else
+//		{
+//			st_sync.n_lotend_module_ldtray_site = CTL_YES;		// 일단 LOT END를 시키자.
+//			RunTransStep = 0;
+//		}
+		st_sync.n_lotend_module_ldtray_site = CTL_YES;		// 일단 LOT END를 시키자.
+		mn_LeakM_LotEnd[1] = YES;
+		RunTransStep = 0;
 		break;
 	}
 }
@@ -989,28 +984,31 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 	case 0:		
 		if(st_work.mn_lot_start == CTL_YES) //Lot이 시작되었으면 시작한다 
 		{
-			if(st_work.nMdlInputCount[0][0] <= 0)
+			if(st_handler.mn_init_state[INIT_LD_STACKER] != CTL_YES)
+				break;
+			if( st_work.nMdlInputCount[0][0] <= 0 ||
+			  ( st_work.n_loadlot_count[LDMODULE_SITE] >= st_work.nMdlInputCount[0][0]) )
 			{//991001 0 99 "작업할 Lot 개수를 입력하지 않았습니다."
-				sprintf(mc_jamcode, "991001");
-				st_work.mn_run_status = CTL_dWARNING;
-				CTL_Lib.Alarm_Error_Occurrence(1089, st_work.mn_run_status, mc_jamcode);	
+//				sprintf(mc_jamcode, "991001");
+//				st_work.mn_run_status = CTL_dWARNING;
+//				CTL_Lib.Alarm_Error_Occurrence(1089, st_work.mn_run_status, mc_jamcode);
+				break;
 			}
-			if(st_sync.n_lotend_module_ldrbt == CTL_YES)
+			if(st_sync.n_lotend_module_ldstacker_site == CTL_YES)
 			{
-				st_sync.n_lotend_module_ldstacker_site = CTL_YES;
-				mn_LeakM_LotEnd[0] = NO;
+				break;
 			}
-			if(mn_LeakM_LotEnd[0] == NO && st_sync.n_lotend_module_ldstacker_site == CTL_NO)
+			else if(mn_LeakM_LotEnd[0] == NO && st_sync.n_lotend_module_ldstacker_site == CTL_NO)
 			{
 				RunS1Step = 10;
 			}
 		}
-		else //if(st_work.mn_lot_start != CTL_YES)
-		{//991000 0 99 "Lot이 Start가 되지 않았습니다."
-			sprintf(mc_jamcode, "991000");
-			st_work.mn_run_status = CTL_dWARNING;
-			CTL_Lib.Alarm_Error_Occurrence(1029, st_work.mn_run_status, mc_jamcode);	
-		}
+//		else //if(st_work.mn_lot_start != CTL_YES)
+//		{//991000 0 99 "Lot이 Start가 되지 않았습니다."
+//			sprintf(mc_jamcode, "991000");
+//			st_work.mn_run_status = CTL_dWARNING;
+//			CTL_Lib.Alarm_Error_Occurrence(1029, st_work.mn_run_status, mc_jamcode);	
+//		}
 
 		break;
 
@@ -1038,7 +1036,7 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 				sprintf(mc_jamcode, "000503"); 
 			}
 			st_work.mn_run_status = CTL_dWARNING;
-			CTL_Lib.Alarm_Error_Occurrence(1030, st_work.mn_run_status, mc_jamcode);	
+			CTL_Lib.Alarm_Error_Occurrence(1090, st_work.mn_run_status, mc_jamcode);	
 		}
 		else
 		{
@@ -1081,7 +1079,7 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 			if(nRet_1 == IO_OFF)	sprintf(mc_jamcode, "000802");
 			else				sprintf(mc_jamcode, "000804");
 			st_work.mn_run_status = CTL_dWARNING;
-			CTL_Lib.Alarm_Error_Occurrence(1030, st_work.mn_run_status, mc_jamcode);	
+			CTL_Lib.Alarm_Error_Occurrence(1277, st_work.mn_run_status, mc_jamcode);	
 		}
 		break;
 
@@ -1135,18 +1133,25 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 
 	case 300:
 		mn_stacker1_init_chk = YES;
-		RunS1Step = 1000;
+		RunS1Step = 900;
 		break;
 
-		st_sync.n_module_guide_tray_stacker[0] = CTL_REQ;
-		RunS1Step = 400;
-		break;
+//		st_sync.n_module_guide_tray_stacker[0] = CTL_REQ;
+//		RunS1Step = 400;
+//		break;
 
-	case 400:
-		if(st_sync.n_module_guide_tray_stacker[1] == CTL_LOCK)
+//	case 400:
+//		if(st_sync.n_module_guide_tray_stacker[1] == CTL_LOCK)
+//		{
+//			st_sync.n_module_guide_tray_stacker[0] = CTL_CLEAR;
+//			mn_stacker1_init_chk = YES;
+//			RunS1Step = 1000;
+//		}
+//		break;
+
+	case 900:
+		if(mn_Moving_stacker == YES)
 		{
-			st_sync.n_module_guide_tray_stacker[0] = CTL_CLEAR;
-			mn_stacker1_init_chk = YES;
 			RunS1Step = 1000;
 		}
 		break;
@@ -1176,14 +1181,30 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 
 
 	case 1100:
-		if(mn_LeakM_LotEnd[1] == YES || st_sync.n_lotend_module_uldstacker_site == CTL_YES || (COMI.mn_simulation_mode == 1 &&(st_work.nMdlInputCount[0][0] == st_work.nMdlPassCount[0][0])))
-		{
-			//일단 초기화 후 제품을 요구하느지 체크 한다
-			 RunS1Step = 10000;
-		}
-		else if(st_sync.mn_ld_module_tray_supply[0] == CTL_CHANGE)
+//		if(mn_LeakM_LotEnd[1] == YES || st_sync.n_lotend_module_uldstacker_site == CTL_YES || (COMI.mn_simulation_mode == 1 &&(st_work.nMdlInputCount[0][0] == st_work.nMdlPassCount[0][0])))
+//		{
+//			//일단 초기화 후 제품을 요구하느지 체크 한다
+//			 RunS1Step = 10000;
+//		}
+//		else if(st_sync.mn_ld_module_tray_supply[0] == CTL_CHANGE)//stacker2 move 
+//		{
+//			RunS1Step = 1200;
+//		}
+		if(st_sync.mn_ld_module_tray_supply[0] == CTL_CHANGE)
 		{
 			RunS1Step = 1200;
+		}
+		else if(st_sync.n_lotend_module_ldstacker_site == CTL_YES)
+		{
+			RunS1Step = 10000;
+		}
+		else if(st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY)
+		{
+			RunS1Step = 10000;
+		}
+		else if(st_sync.mn_ld_module_tray_supply[0] == CTL_CLEAR )
+		{
+			RunS1Step = 1000;
 		}
 		break;
 
@@ -1323,7 +1344,7 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 		
 		if (nRet_1 == IO_ON || st_basic.n_mode_device == 2)	// 트레이가 있다
 		{
-			RunS1Step = 3000;
+			RunS1Step = 2200;
 		}
 		else
 		{
@@ -1331,16 +1352,16 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 			sprintf(mc_jamcode, "000201");
 			st_work.mn_run_status = CTL_dWARNING;
 			CTL_Lib.Alarm_Error_Occurrence(1039, st_work.mn_run_status, mc_jamcode);
-			RunS1Step = 2200;
+			RunS1Step = 2110;
 		}
 		break;
 
-	case 2200:
+	case 2110:
 		nRet_1 = FAS_IO.get_in_bit(st_io.i_m_stacker1_rail_tray_chk, IO_ON);
 		
 		if (nRet_1 == IO_ON || st_basic.n_mode_device == 2)	// 트레이가 있다
 		{
-			RunS1Step = 3000;
+			RunS1Step = 2200;
 		}
 		else
 		{
@@ -1349,7 +1370,7 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 		break;
 		
 
-	case 3000:
+	case 2200:
 		st_sync.mn_ld_module_tray_supply[mn_StackerPos] = CTL_LOCK;		// 교체 끝났다고 설정.
 		//트레이 정보 
 		RunS1Step = 1000;
@@ -1384,17 +1405,20 @@ void CRun_Stacker_Load_Module::Run_Stacker1Move()
 		break;
 
 	case 10100:
-		if(st_sync.n_lotend_module_ldrbt != CTL_YES)
-		{
-			st_sync.n_lotend_lefths_ldstacker_site = CTL_NO;
-			mn_LeakM_LotEnd[0] = YES;
-			RunS1Step = 0;
-		}
-		else
-		{
-			st_sync.n_lotend_module_ldstacker_site = CTL_YES;
-			RunS1Step = 0;
-		}
+//		if(st_sync.n_lotend_module_ldrbt != CTL_YES)
+//		{
+//			st_sync.n_lotend_module_ldstacker_site = CTL_NO;
+//			mn_LeakM_LotEnd[0] = YES;
+//			RunS1Step = 0;
+//		}
+//		else
+//		{
+//			st_sync.n_lotend_module_ldstacker_site = CTL_YES;
+//			RunS1Step = 0;
+//		}
+		st_sync.n_lotend_module_ldstacker_site = CTL_YES;
+		mn_LeakM_LotEnd[0] = YES;
+		RunS1Step = 0;
 		break;		
 
 	}
@@ -1431,8 +1455,9 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 	case 0:
 		if(st_work.mn_lot_start == CTL_YES) //Lot이 시작되었으면 시작한다 
 		{
-			if(mn_LeakM_LotEnd[2] == NO && st_sync.n_lotend_module_uldstacker_site == CTL_NO)
+			if(st_sync.n_lotend_module_uldstacker_site == CTL_NO)
 			{
+				mn_LeakM_LotEnd[2] = NO;
 				RunS2Step = 10;
 			}
 		}
@@ -1590,7 +1615,7 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 	case 100:
 		if(mn_Moving_stacker == YES)
 		{
-			st_sync.mn_ld_module_tray_change[0] = CTL_YES;
+//			st_sync.mn_ld_module_tray_change[0] = CTL_YES;
 			RunS2Step = 200;
 		}
 		break;
@@ -1658,8 +1683,9 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 		break;
 
 	case 1000:
-		if (st_sync.mn_ld_module_tray_change[0] == CTL_YES || 
-			(st_sync.mn_ld_module_tray_supply[1] == CTL_FREE && mn_LeakM_LotEnd[1] == YES))
+//		if (st_sync.mn_ld_module_tray_change[0] == CTL_YES || 
+//			(st_sync.mn_ld_module_tray_supply[1] == CTL_FREE && mn_LeakM_LotEnd[1] == YES))
+		if (st_sync.mn_ld_module_tray_change[0] == CTL_YES)
 		{
 			RunS2Step = 1100;
 		}
@@ -1668,6 +1694,10 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 			if (st_sync.n_lotend_module_ldrbt == CTL_YES)
 			{
 				RunS2Step = 1100;
+			}
+			else if(st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY)
+			{
+				RunS2Step = 10000;
 			}
 		}
 		break;
@@ -1879,7 +1909,8 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 			RunS2Step = 3200;
 		}
 		//else if(st_sync.n_lotend_module_ldrbt == CTL_YES)
-		else if(st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY || (st_work.nMdlInputCount[0][0] == st_work.nMdlPassCount[0][0]) && COMI.mn_simulation_mode == 1) // Tray가 없으면 stacker2 Down // 20130509
+		else if(st_sync.mn_ld_module_tray_supply[0] == CTL_NOTREADY || 
+			(st_work.nMdlInputCount[0][0] == st_work.nMdlPassCount[0][0]) && COMI.mn_simulation_mode == 1) // Tray가 없으면 stacker2 Down // 20130509
 		{
 			RunS2Step = 10000;
 		}
@@ -1948,7 +1979,8 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 		break;
 
 	case 3700:
-		if(st_sync.n_module_ldrbt_tray_req[0] == CTL_REQ || st_sync.n_lotend_module_ldrbt == CTL_YES)
+		if(st_sync.n_module_ldrbt_tray_req[0] == CTL_REQ || 
+			st_sync.n_lotend_module_ldrbt == CTL_YES)
 		{
 			st_sync.n_module_ldrbt_tray_req[0] = CTL_READY;
 			st_sync.n_module_ldrbt_tray_req[1] = BIN_LDBUFFERBIN;
@@ -1957,7 +1989,8 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 		break;
 
 	case 4000://한장 빼기
-		if(st_sync.n_module_ldrbt_tray_req[0] == CTL_REQ || st_sync.n_lotend_module_ldrbt == CTL_YES)
+		if(st_sync.n_module_ldrbt_tray_req[0] == CTL_REQ || 
+			st_sync.n_lotend_module_ldrbt == CTL_YES)
 		{
 			st_sync.mn_ld_module_tray_supply[1] = CTL_CHANGE;
 			RunS2Step = 4100;
@@ -2146,6 +2179,7 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 				sprintf(mc_jamcode, "000201");
 				st_work.mn_run_status = CTL_dWARNING;
 				CTL_Lib.Alarm_Error_Occurrence(1066, st_work.mn_run_status, mc_jamcode);
+				RunS2Step = 4600;
 			}
 		}
 		break;
@@ -2271,17 +2305,20 @@ void CRun_Stacker_Load_Module::Run_Stacker2Move()
 		break;
 
 	case 10400:
-		if(st_sync.n_lotend_module_ldrbt != CTL_YES)
-		{
-			st_sync.n_lotend_module_uldstacker_site = CTL_NO;
-			mn_LeakM_LotEnd[2] = YES;
-			RunS2Step = 0;
-		}
-		else
-		{
-			st_sync.n_lotend_module_uldstacker_site = CTL_YES;	
-			RunS2Step = 0;
-		}
+//		if(st_sync.n_lotend_module_ldrbt != CTL_YES)
+//		{
+//			st_sync.n_lotend_module_uldstacker_site = CTL_NO;
+//			mn_LeakM_LotEnd[2] = YES;
+//			RunS2Step = 0;
+//		}
+//		else
+//		{
+//			st_sync.n_lotend_module_uldstacker_site = CTL_YES;	
+//			RunS2Step = 0;
+//		}
+		st_sync.n_lotend_module_uldstacker_site = CTL_YES;
+		mn_LeakM_LotEnd[2] = YES;
+		RunS2Step = 0;
 		break;
 	}
 }
@@ -2305,8 +2342,9 @@ void CRun_Stacker_Load_Module::Run_Moving_Stacker()
 	case 0:
 		if(st_work.mn_lot_start == CTL_YES) //Lot이 시작되었으면 시작한다 
 		{
-			if(mn_LeakM_LotEnd[3] == NO && st_sync.n_lotend_module_movingtray_site == CTL_NO)
+			if(st_sync.n_lotend_module_movingtray_site == CTL_NO)
 			{
+				mn_LeakM_LotEnd[3] = NO;
 				mn_ms_retry = 0;
 				RunMStep = 100;
 			}
@@ -2425,19 +2463,38 @@ void CRun_Stacker_Load_Module::Run_Moving_Stacker()
 		if(st_sync.n_lotend_module_ldrbt == CTL_YES && st_sync.n_lotend_module_uldstacker_site == CTL_YES && 
 			st_sync.n_lotend_module_ldstacker_site == CTL_YES)
 		{
-			RunMStep = 2100;
+			if( COMI.Get_MotCurrentPos(M_LDM_STACKER_1) < ( st_motor[M_LDM_STACKER_1].md_pos[P_STOCKER_P_LIMIT] - st_motor[M_HS_F_STACKER_1].mn_allow ) )
+			{
+				sprintf(COMI.mc_alarmcode,"000008");
+				st_work.mn_run_status = CTL_dWARNING;
+				CTL_Lib.Alarm_Error_Occurrence(1079, st_work.mn_run_status, mc_jamcode);	
+			}
+			else if( COMI.Get_MotCurrentPos(M_LDM_STACKER_2) > ( st_motor[M_LDM_STACKER_2].md_pos[P_STOCKER_DOWN] + st_motor[M_HS_F_STACKER_1].mn_allow ) )
+			{
+				sprintf(COMI.mc_alarmcode,"010008");
+				st_work.mn_run_status = CTL_dWARNING;
+				CTL_Lib.Alarm_Error_Occurrence(1089, st_work.mn_run_status, mc_jamcode);	
+			}
+			else
+			{
+				RunMStep = 2100;
+			}
 		}
 		else if(mn_LeakM_LotEnd[0] == YES && mn_LeakM_LotEnd[1] == YES && mn_LeakM_LotEnd[2] == YES)
 		{
 			RunMStep = 2100;
 		}
+		//else if(mn_Moving_stacker == YES)
+		//{
+		//	RunMStep = 2100;
+		//}
 		break;
 
 	case 2100:
 		nRet_1 = CTL_Lib.Single_Move(M_LDM_STACKER_MOVE, st_motor[M_LDM_STACKER_MOVE].md_pos[P_MSTACKER_LD_POS], st_basic.nRunSpeed);
 		if(nRet_1 == BD_GOOD)
 		{
-			mn_Moving_stacker = YES;//Unloader위치로 이동 완료
+//			mn_Moving_stacker = YES;//Unloader위치로 이동 완료
 			RunMStep = 3000;
 		}
 		else if (nRet_1 == BD_RETRY)
@@ -2465,95 +2522,188 @@ void CRun_Stacker_Load_Module::Run_Moving_Stacker()
 		break;
 
 	case 4000:
-		if(mn_LeakM_LotEnd[0] == YES && mn_LeakM_LotEnd[1] == YES && mn_LeakM_LotEnd[2] == YES)
+// 		if(mn_LeakM_LotEnd[0] == YES && mn_LeakM_LotEnd[1] == YES && mn_LeakM_LotEnd[2] == YES)
+// 		{
+// 			st_sync.n_lotend_module_movingtray_site = CTL_NO; //전체 다시 시작
+// 			 mn_LeakM_LotEnd[3] = YES;
+// 			 st_sync.n_lot_reready[0] = CTL_REQ;
+// 			 st_handler.n_lotend_ready = 1;
+// 			 mn_Moving_stacker = NO;
+// 			 RunMStep = 5000;
+// 		}
+// 		else
+// 		{
+// 			mn_Moving_stacker = NO;
+// 			st_sync.n_lotend_module_movingtray_site = CTL_YES;
+// 			RunMStep = 0;
+// 		}
+		//2017.0731
+		if( 1 || mn_LeakM_LotEnd[0] == YES && mn_LeakM_LotEnd[1] == YES && mn_LeakM_LotEnd[2] == YES)
 		{
-			st_sync.n_lotend_module_movingtray_site = CTL_NO; //전체 다시 시작
-			 mn_LeakM_LotEnd[3] = YES;
-			 st_sync.n_lot_reready[0] = CTL_REQ;
-			 st_handler.n_lotend_ready = 1;
-			 mn_Moving_stacker = NO;
-			 RunMStep = 5000;
+			mn_LeakM_LotEnd[3] = YES;
+			mn_Moving_stacker = NO;
+			RunMStep = 5000;
 		}
 		else
 		{
 			mn_Moving_stacker = NO;
-			st_sync.n_lotend_module_movingtray_site = CTL_YES;
-			RunMStep = 0;
+			RunMStep = 4100;
 		}
 		st_sync.n_module_guide_tray_stacker[1] = CTL_CLEAR;
 		break;
 
-	case 5000:
-		if(st_sync.n_lot_reready[0] == CTL_READY)
+	case 4100:
+		if(st_work.mn_lot_start == CTL_YES) //Lot이 시작되었으면 시작한다 
 		{
-			if(FAS_IO.get_in_bit(st_io.i_m_uld_slide_tray_chk, IO_OFF) == IO_OFF)
-			{
-				InitStep = 0;
-				st_handler.mn_init_state[INIT_LD_STACKER] = CTL_NO;
-				RunMStep = 5200;
-			}
-			else
-			{
-				//994009 0 99 "Module Blank(빈)자재를 제거해 주세요."
-				sprintf(mc_jamcode, _T("994009")); 
-		//		st_work.mn_run_status = CTL_dWARNING;
-				CTL_Lib.Alarm_Error_Occurrence(1081, CTL_dWARNING, mc_jamcode);
-				RunMStep = 5000;
-			}
+		//	if(mn_LeakM_LotEnd[3] == NO && st_sync.n_lotend_module_movingtray_site == CTL_NO)
+		//	{
+		//		mn_ms_retry = 0;
+		//		RunMStep = 100;
+		//	}
+			break;
 		}
-		/////////////////// 20130611
-		else if(st_sync.n_lot_reready[0] == CTL_REQ)
+		else
 		{
-			if(FAS_IO.get_in_bit(st_io.i_m_uld_slide_tray_chk, IO_ON) == IO_ON)
-			{
-				st_sync.n_lot_reready[0] = CTL_READY;
-			}
+			RunMStep = 5000;
+		}
+		break;
+
+
+	case 5000:
+// 		if(st_sync.n_lot_reready[0] == CTL_READY)
+// 		{
+// 			if(FAS_IO.get_in_bit(st_io.i_m_uld_slide_tray_chk, IO_OFF) == IO_OFF)
+// 			{
+// 				InitStep = 0;
+// 				st_handler.mn_init_state[INIT_LD_STACKER] = CTL_NO;
+// 				RunMStep = 5200;
+// 			}
+// 			else
+// 			{
+// 				//994009 0 99 "Module Blank(빈)자재를 제거해 주세요."
+// 				sprintf(mc_jamcode, _T("994009")); 
+// 		//		st_work.mn_run_status = CTL_dWARNING;
+// 				CTL_Lib.Alarm_Error_Occurrence(1081, CTL_dWARNING, mc_jamcode);
+// 				RunMStep = 5000;
+// 			}
+// 		}
+// 		/////////////////// 20130611
+// 		else if(st_sync.n_lot_reready[0] == CTL_REQ)
+// 		{
+// 			if(FAS_IO.get_in_bit(st_io.i_m_uld_slide_tray_chk, IO_ON) == IO_ON)
+// 			{
+// 				st_sync.n_lot_reready[0] = CTL_READY;
+// 			}
+// 		}
+		//2017.0731
+		if(FAS_IO.get_in_bit(st_io.i_m_uld_slide_tray_chk, IO_OFF) == IO_OFF)
+		{
+			InitStep = 0;
+			st_handler.mn_init_state[INIT_LD_STACKER] = CTL_NO;
+			RunMStep = 5200;
+		}
+		else //if(FAS_IO.get_in_bit(st_io.i_m_uld_slide_tray_chk, IO_OFF) == IO_OFF)
+		{
+			RunMStep = 5100;
 		}
 		break;
 
 	case 5100:
+		//994009 0 99 "Module Blank(빈)자재를 제거해 주세요."
+		sprintf(mc_jamcode, _T("994009")); 
+		st_work.mn_run_status = CTL_dWARNING;
+		CTL_Lib.Alarm_Error_Occurrence(1081, CTL_dWARNING, mc_jamcode);
 		RunMStep = 5000;
 		break;
 
 	case 5200:
+// 		Run_Init();
+// 		if(st_handler.mn_init_state[INIT_LD_STACKER] == CTL_YES)
+// 		{
+// 			st_sync.n_lot_reready[0] = CTL_LOCK;
+// 			RunMStep = 5300;
+// 		}
+		st_sync.n_lot_reready[MODULE_SITE] = CTL_CHANGE;
+		RunMStep = 5210;
+		break;
+
+	case 5210:
+		//2017.0731
 		Run_Init();
 		if(st_handler.mn_init_state[INIT_LD_STACKER] == CTL_YES)
 		{
-			st_sync.n_lot_reready[0] = CTL_LOCK;
+			st_sync.n_lot_reready[MODULE_SITE] = CTL_FREE;
 			RunMStep = 5300;
+//			st_sync.mn_ld_module_tray_supply[0] = st_sync.mn_ld_module_tray_supply[1] = CTL_CLEAR;
+//			mn_LeakM_LotEnd[0] = mn_LeakM_LotEnd[1] = mn_LeakM_LotEnd[2] = mn_LeakM_LotEnd[3] = NO;
+
+//			st_sync.n_lotend_module_ldtray_site = CTL_NO;
+//			st_sync.n_lotend_module_uldtray_site = CTL_NO;
+//			st_sync.n_lotend_module_movingtray_site = CTL_NO;
+//			st_sync.mn_ld_module_tray_change[0] = st_sync.mn_ld_module_tray_change[1] = CTL_NO;	
 		}
 		break;
 
 	case 5300:
-		if(st_sync.n_lot_reready[0] == CTL_CLEAR)
+// 		if(st_sync.n_lot_reready[0] == CTL_CLEAR)
+// 		{
+// 			nRet_1 = FAS_IO.get_in_bit(st_io.i_m_ld_slide_tray_chk, IO_ON);
+// 			if(nRet_1 == IO_OFF)
+// 			{
+// 				//994001 0 99 "자재및 모듈을 투입해 주세요. Lot 수량이 맞지 않습니다."
+// 				sprintf(mc_jamcode, "994001"); 
+// 				st_work.mn_run_status = CTL_dWARNING;
+// 				CTL_Lib.Alarm_Error_Occurrence(1082, st_work.mn_run_status, mc_jamcode);
+// 			}
+// 			else
+// 			{
+// 				RunMStep = 5400;
+// 			}
+// 		}
+// 		/////////////////// 20130611
+// 		else if(st_sync.n_lot_reready[0] != CTL_CLEAR && st_handler.mn_init_state[INIT_LD_STACKER] == CTL_YES)
+// 		{
+// 			if(FAS_IO.get_in_bit(st_io.i_m_ld_slide_tray_chk, IO_OFF) == IO_OFF)
+// 			{
+// 				st_sync.n_lot_reready[0] = CTL_CLEAR;
+// 			}
+// 		}
+		if(st_work.n_loadlot_count[LDMODULE_SITE] >= st_work.nMdlInputCount[0][0])
 		{
-			nRet_1 = FAS_IO.get_in_bit(st_io.i_m_ld_slide_tray_chk, IO_ON);
-			if(nRet_1 == IO_OFF)
-			{
-				//994001 0 99 "자재및 모듈을 투입해 주세요. Lot 수량이 맞지 않습니다."
-				sprintf(mc_jamcode, "994001"); 
-				st_work.mn_run_status = CTL_dWARNING;
-				CTL_Lib.Alarm_Error_Occurrence(1082, st_work.mn_run_status, mc_jamcode);
-			}
-			else
-			{
-				RunMStep = 5400;
-			}
+			break;
 		}
-		/////////////////// 20130611
-		else if(st_sync.n_lot_reready[0] != CTL_CLEAR && st_handler.mn_init_state[INIT_LD_STACKER] == CTL_YES)
+		//2017.0731
+		nRet_1 = FAS_IO.get_in_bit(st_io.i_m_ld_slide_tray_chk, IO_ON);
+		if(nRet_1 == IO_OFF)
 		{
-			if(FAS_IO.get_in_bit(st_io.i_m_ld_slide_tray_chk, IO_OFF) == IO_OFF)
-			{
-				st_sync.n_lot_reready[0] = CTL_CLEAR;
-			}
+			//994001 0 99 "자재및 모듈을 투입해 주세요. Lot 수량이 맞지 않습니다."
+			//000100 1 00 "Stacker1 the tray is present, Please remove.[PS0102, PS0104]"
+			sprintf(mc_jamcode, "994001"); 
+			st_work.mn_run_status = CTL_dWARNING;
+			CTL_Lib.Alarm_Error_Occurrence(1083, st_work.mn_run_status, mc_jamcode);
 		}
-
+		else
+		{
+			RunMStep = 5400;
+		}
 		break;
 
 	case 5400:
-		st_sync.mn_ld_module_tray_supply[0] = st_sync.mn_ld_module_tray_supply[1] = CTL_CLEAR;
-		mn_LeakM_LotEnd[0] = mn_LeakM_LotEnd[1] = mn_LeakM_LotEnd[2] = mn_LeakM_LotEnd[3] = NO;
+		if( st_sync.n_lotend_module_ldtray_site == CTL_YES && st_sync.n_lotend_module_ldstacker_site == CTL_YES &&
+			st_sync.n_lotend_module_uldstacker_site == CTL_YES )
+		{
+			st_sync.n_lot_reready[MODULE_SITE] = CTL_CLEAR;
+			st_sync.mn_ld_module_tray_supply[0] = CTL_CLEAR;
+			st_sync.mn_ld_module_tray_supply[1] = CTL_CLEAR;
+			mn_LeakM_LotEnd[0] = mn_LeakM_LotEnd[1] = mn_LeakM_LotEnd[2] = mn_LeakM_LotEnd[3] = NO;
+
+			st_sync.n_lotend_module_ldtray_site = CTL_NO;
+			st_sync.n_lotend_module_ldstacker_site = CTL_NO;
+			st_sync.n_lotend_module_uldstacker_site = CTL_NO;
+			st_sync.n_lotend_module_movingtray_site = CTL_NO;
+			st_sync.mn_ld_module_tray_change[0] = st_sync.mn_ld_module_tray_change[1] = CTL_NO;	
+		}
+
 		RunMStep = 0;
 		break;
 	}
@@ -3264,7 +3414,7 @@ int CRun_Stacker_Load_Module::Set_PusherCylinderOnOff(int n_onoff)
 			//000202 0 00 "Stacker1 레일에 트레이가 있습니다."
 			sprintf(mc_jamcode,"000202");
 			st_work.mn_run_status = CTL_dWARNING;
-			CTL_Lib.Alarm_Error_Occurrence(1080, st_work.mn_run_status, mc_jamcode);
+			CTL_Lib.Alarm_Error_Occurrence(1082, st_work.mn_run_status, mc_jamcode);
 			nFuncRet = CYLINDER_ERROR;
 		}
 	}

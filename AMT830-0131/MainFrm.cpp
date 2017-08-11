@@ -233,7 +233,7 @@ CMainFrame::CMainFrame()
 	Func.InitNode(); // 20130314
 
 	//////////////////////////////// 20120620
-	for(i=1; i<MAX_PORT; i++)
+	for(i=2; i<MAX_PORT; i++)
 	{
 		OnMain_Port_Create(i);
 	}
@@ -319,7 +319,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		st_handler.mstr_handler_name = "AMT830";
 
 	st_handler.mstr_handler_version = "Ver 1.0.2";
-	str_temp = _T("2016,0516");
+	str_temp = _T("2017,0810");
 	st_handler.mstr_handler_date = str_temp;
 	
 	// **************************************************************************
@@ -359,8 +359,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mcls_m_basic.OnMaintenance_Data_Load();
 	mcls_m_basic.OnSkip_Data_Load();	//20120525
 	mcls_m_basic.OnBasic_Label_Data_Load();	//20120531
-
-  	mcls_m_basic.OnBasic_Part_Number_Load();	//20121220
+    mcls_m_basic.OnBasic_Part_Number_Load();	//20121220
 
 	Func.PartNumber_Check();
 
@@ -409,12 +408,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	g_ver.SetVersion();
 
-
-	OnMain_Motor_Setting();
 	
+	OnMain_Motor_Setting();	
 	OnMain_Thread_Creating();
-
 	Init_ToolTip();
+
 	
 	// **************************************************************************
     // 초기화 진행 화면으로 전환하여 장비 초기화 작업 진행한다                   
@@ -2835,8 +2833,7 @@ LRESULT CMainFrame::OnDataSend(WPARAM wParam, LPARAM lParam)
 	int i = 0;
 	CString data, temp;
 	
-	switch(port)
-	{
+	switch(port){
 		////////////////////////////////////////// 20120620
 // 		case GMS_PORT:
 // 			OnMain_Snd_Serial(wParam, lParam);

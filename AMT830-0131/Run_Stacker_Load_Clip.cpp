@@ -34,8 +34,8 @@ CRun_Stacker_Load_Clip::~CRun_Stacker_Load_Clip()
 /////////////////////////////////////////////////////////////////////////////
 // CRun_Stacker_Load_Clip message handlers
 void CRun_Stacker_Load_Clip::Thread_Run()
-{
-	
+{	
+
 	// **************************************************************************
     // 쓰레드 강제 리턴 조건 검사한다 (System Lock)                              
     // **************************************************************************
@@ -2019,21 +2019,24 @@ void CRun_Stacker_Load_Clip::Run_Move()
 	case 3100:
 		if(st_sync.n_lotend_clip_ldrbt == CTL_YES)
 		{
-			RunStep = 10000;
+			break;
 		}
-		else if(st_sync.n_ld_clip_tray_supply == CTL_CHANGE)
+		else
 		{
-			for(i = 0 ; i < st_traybuffer[LDCLIP_SITE].i_loader_row ; i++)
+			if( st_work.mn_lot_start == CTL_YES && st_sync.n_ld_clip_tray_supply == CTL_CHANGE)
 			{
-				st_modulemap.ClipTray[0][i] = DVC_NO;
-				st_modulemap.ClipTray[1][i] = DVC_NO;
+				for(i = 0 ; i < st_traybuffer[LDCLIP_SITE].i_loader_row ; i++)
+				{
+					st_modulemap.ClipTray[0][i] = DVC_NO;
+					st_modulemap.ClipTray[1][i] = DVC_NO;
+				}
+				if(st_handler.cwnd_main != NULL)
+				{			
+					st_handler.cwnd_main->PostMessage(WM_WORK_END, TRAY_INFO, MOT_CLIP1_TRAY);			// 피커 정보 
+					st_handler.cwnd_main->PostMessage(WM_WORK_END, TRAY_INFO, MOT_CLIP2_TRAY);			// 피커 정보 
+				}
+				RunStep = 3200;
 			}
-			if(st_handler.cwnd_main != NULL)
-			{			
-				st_handler.cwnd_main->PostMessage(WM_WORK_END, TRAY_INFO, MOT_CLIP1_TRAY);			// 피커 정보 
-				st_handler.cwnd_main->PostMessage(WM_WORK_END, TRAY_INFO, MOT_CLIP2_TRAY);			// 피커 정보 
-			}
-			RunStep = 3200;
 		}
 		break;
 
@@ -2380,6 +2383,8 @@ void CRun_Stacker_Load_Clip::Run_Move()
 		if(st_sync.i_remove_clip_bin == CTL_NO)
 		{
 			RunStep = 10500;
+			//2017.0731
+			RunStep = 10940;
 		}
 		break;		
 
@@ -2903,94 +2908,6 @@ void CRun_Stacker_Load_Clip::Run_LoadClip()
 	Func.ThreadFunctionStepTrace(89, RunLdClipStep);
 	switch(RunLdClipStep)
 	{
-//	case 0:
-//		if(st_handler.n_loadClip == CTL_YES)
-//		{
-//			RunLdClipStep = 1000;
-//		}
-//		else if(st_handler.n_unloadCenterChk == CTL_YES)
-//		{
-//			RunLdClipStep = 1010;
-//		}
-//		break;
-//
-//	case 1000:
-//		nRet_1 = CheckTransferBeforeMove();
-//		if(nRet_1 == RET_GOOD)
-//		{
-//			st_handler.n_loadCenterChk = CTL_YES;
-//			RunLdClipStep = 1100;
-//		}
-//		break;
-//
-//	case 1010:
-//		if(FAS_IO.get_in_bit(st_io.i_tube_rotator_90_chk, IO_ON) == IO_ON || 
-//			FAS_IO.get_in_bit(st_io.i_tube_rotator_0_chk, IO_OFF) == IO_OFF)
-//		{
-//			RunLdClipStep = 1020;
-//		}
-//		else
-//		{
-//			RunLdClipStep = 1020;
-//		}
-//		break;
-//
-//	case 1020:
-//		nRet_1 = FAS_IO.get_in_bit(st_io.i_ld_tube_chk, IO_OFF);
-//		nRet_2 = FAS_IO.get_in_bit(st_io.i_uld_tube_chk, IO_OFF);
-//		if(nRet_1 == IO_ON || nRet_2 == IO_ON)
-//		{
-//			//180106 0 18 "로드 튜브에 튜브가 체크되었습니다. 제거해 주세요."
-//			//180608 0 18 "언로드 튜브에 튜브가 체크되었습니다. 제거해 주세요."
-//			if(nRet_1 == IO_ON)	sprintf(mc_alarmcode,"180106");
-//			else				sprintf(mc_alarmcode,"180608");
-//			CTL_Lib.Alarm_Error_Occurrence(1524, CTL_dWARNING, mc_alarmcode);
-//			RunLdClipStep = 1020;
-//		}
-//		else
-//		{
-//			RunLdClipStep = 1100;
-//		}
-//		break;
-//		
-//	case 1100://하나빼기
-//		nRet_1 = OnLoadClipTransferStackerUpDn();
-//		if(nRet_1 == RET_GOOD)
-//		{
-//			RunLdClipStep = 1200;
-//		}
-//		break;
-//
-//	case 1200:
-//		nRet_1 = FAS_IO.get_in_bit(st_io.i_ld_tube_chk, IO_ON);
-//		if(st_basic.n_mode_device != 1) nRet_1 = IO_ON;
-//		if(nRet_1 == IO_ON)
-//		{
-//			RunLdClipStep = 1300;
-//		}
-//		else
-//		{
-//			//180108 0 18 "로드 튜브에 튜브가 체크되지 않았습니다."
-//			sprintf(mc_alarmcode,"180108");
-//			st_work.mn_run_status = CTL_dWARNING;			
-//			CTL_Lib.Alarm_Error_Occurrence(1525, st_work.mn_run_status, mc_alarmcode);
-//		}
-//		break;
-//
-//	case 1300:
-//		if(FAS_IO.get_in_bit(st_io.i_rotate_tube_chk, IO_OFF) == IO_OFF)
-//		{				
-//			RunLdClipStep = 1400;
-//		}
-//		else
-//		{//180508 0 18 "로드 튜브 rotator에 튜브가 체크되었습니다. 제거해 주세요."
-//			sprintf(mc_alarmcode,"180508");
-//			st_work.mn_run_status = CTL_dWARNING;
-//			CTL_Lib.Alarm_Error_Occurrence(1526, st_work.mn_run_status, mc_alarmcode);	
-//		}
-//		break;
-
-//	case 1400:
 	case 0:
 		if(st_handler.n_loadCenterChk == CTL_YES)//CTL_READY)
 		{
@@ -3924,7 +3841,7 @@ void CRun_Stacker_Load_Clip::Run_Transfer()
 		}
 		else if(st_sync.n_lotend_clip_ldrbt == CTL_YES)
 		{
-			RunTransStep = 10000;
+			break;
 		}
 		break;
 

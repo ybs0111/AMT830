@@ -1317,6 +1317,10 @@ SOURCE=.\res\datepick.bmp
 # End Source File
 # Begin Source File
 
+SOURCE=.\res\default1.bin
+# End Source File
+# Begin Source File
+
 SOURCE=.\res\digit_b.bmp
 # End Source File
 # Begin Source File
@@ -1918,6 +1922,10 @@ SOURCE=.\Animate.h
 # End Group
 # Begin Source File
 
+SOURCE=.\aaa.txt
+# End Source File
+# Begin Source File
+
 SOURCE=.\app.manifest
 # End Source File
 # Begin Source File
@@ -1930,6 +1938,186 @@ SOURCE=.\ReadMe.txt
 # End Source File
 # End Target
 # End Project
+# Section Handler : {048EE095-669E-46A7-80E6-FF8D771EFC15}
+# 	1:20:IDD_SCREEN_DATA_VIEW:121
+# 	2:16:Resource Include:resource.h
+# 	2:24:CLASS: CScreen_Data_View:CScreen_Data_View
+# 	2:10:ENUM: enum:enum
+# 	2:20:IDD_SCREEN_DATA_VIEW:IDD_SCREEN_DATA_VIEW
+# 	2:19:Application Include:handler.h
+# 	2:20:Screen_Data_View.cpp:Screen_Data_View.cpp
+# 	2:18:Screen_Data_View.h:Screen_Data_View.h
+# End Section
+# Section Handler : {987F7439-F23D-4176-82D2-3ADC8E437864}
+# 	1:20:IDD_DIALOG_MULTI_MSG:111
+# 	2:16:Resource Include:resource.h
+# 	2:20:IDD_DIALOG_MULTI_MSG:IDD_DIALOG_MULTI_MSG
+# 	2:20:Dialog_Multi_Msg.cpp:Dialog_Multi_Msg.cpp
+# 	2:10:ENUM: enum:enum
+# 	2:18:Dialog_Multi_Msg.h:Dialog_Multi_Msg.h
+# 	2:19:Application Include:handler.h
+# 	2:24:CLASS: CDialog_Multi_Msg:CDialog_Multi_Msg
+# End Section
+# Section Handler : {AC4D5BA0-C396-48B0-BCA6-B9F265B4FE5A}
+# 	1:22:IDD_SCREEN_MOTOR_LDULD:119
+# 	2:16:Resource Include:resource.h
+# 	2:22:Screen_Motor_LdUld.cpp:Screen_Motor_LdUld.cpp
+# 	2:20:Screen_Motor_LdUld.h:Screen_Motor_LdUld.h
+# 	2:22:IDD_SCREEN_MOTOR_LDULD:IDD_SCREEN_MOTOR_LDULD
+# 	2:10:ENUM: enum:enum
+# 	2:26:CLASS: CScreen_Motor_LdUld:CScreen_Motor_LdUld
+# 	2:19:Application Include:handler.h
+# End Section
+# Section Handler : {8DC1B3E7-834E-4FBA-AFAC-F5F97C0F2C24}
+# 	1:18:IDD_DIALOG_PART_IO:142
+# 	2:16:Resource Include:resource.h
+# 	2:18:Dialog_Part_IO.cpp:Dialog_Part_IO.cpp
+# 	2:16:Dialog_Part_IO.h:Dialog_Part_IO.h
+# 	2:10:ENUM: enum:enum
+# 	2:18:IDD_DIALOG_PART_IO:IDD_DIALOG_PART_IO
+# 	2:22:CLASS: CDialog_Part_IO:CDialog_Part_IO
+# 	2:19:Application Include:handler.h
+# End Section
+# Section Handler : {7ABB6075-8E6E-43D3-8F39-82CCEF73B332}
+# 	1:19:IDD_SCREEN_PGM_INFO:145
+# 	2:17:Screen_Pgm_Info.h:Screen_Pgm_Info.h
+# 	2:16:Resource Include:resource.h
+# 	2:19:Screen_Pgm_Info.cpp:Screen_Pgm_Info.cpp
+# 	2:19:IDD_SCREEN_PGM_INFO:IDD_SCREEN_PGM_INFO
+# 	2:10:ENUM: enum:enum
+# 	2:19:Application Include:handler.h
+# 	2:23:CLASS: CScreen_Pgm_Info:CScreen_Pgm_Info
+# End Section
+# Section Handler : {27140B28-9FA2-48F7-BD00-630A91633EAA}
+# 	1:17:IDD_SCREEN_BASIC1:117
+# 	2:16:Resource Include:resource.h
+# 	2:20:CLASS: CScreen_Basic:CScreen_Basic
+# 	2:16:Screen_Basic.cpp:Screen_Basic1.cpp
+# 	2:14:Screen_Basic.h:Screen_Basic1.h
+# 	2:10:ENUM: enum:enum
+# 	2:19:Application Include:handler.h
+# 	2:16:IDD_SCREEN_BASIC:IDD_SCREEN_BASIC1
+# End Section
+# Section Handler : {9CB231B6-6648-4E5F-8A37-8DDCA03D732C}
+# 	1:25:IDD_SCREEN_LIST_OPERATION:122
+# 	2:16:Resource Include:resource.h
+# 	2:25:Screen_List_Operation.cpp:Screen_List_Operation.cpp
+# 	2:23:Screen_List_Operation.h:Screen_List_Operation.h
+# 	2:25:IDD_SCREEN_LIST_OPERATION:IDD_SCREEN_LIST_OPERATION
+# 	2:29:CLASS: CScreen_List_Operation:CScreen_List_Operation
+# 	2:10:ENUM: enum:enum
+# 	2:19:Application Include:handler.h
+# End Section
+# Section Handler : {2FAED75F-EDBA-4BAC-A1F3-06761CF9DA1F}
+# 	1:17:IDD_DIALOG_SELECT:112
+# 	2:16:Resource Include:resource.h
+# 	2:17:IDD_DIALOG_SELECT:IDD_DIALOG_SELECT
+# 	2:10:ENUM: enum:enum
+# 	2:19:Application Include:handler.h
+# 	2:17:Dialog_Select.cpp:Dialog_Select.cpp
+# 	2:15:Dialog_Select.h:Dialog_Select.h
+# 	2:21:CLASS: CDialog_Select:CDialog_Select
+# End Section
+# Section Handler : {BF36ECE5-63A5-49D7-A0B6-D343689DEDD9}
+# 	1:15:IDD_DIALOG_MENU:110
+# 	2:16:Resource Include:resource.h
+# 	2:13:Dialog_Menu.h:Dialog_Menu.h
+# 	2:15:Dialog_Menu.cpp:Dialog_Menu.cpp
+# 	2:10:ENUM: enum:enum
+# 	2:15:IDD_DIALOG_MENU:IDD_DIALOG_MENU
+# 	2:19:CLASS: CDialog_Menu:CDialog_Menu
+# 	2:19:Application Include:Handler.h
+# End Section
+# Section Handler : {D1E47E53-FE8F-4AB0-82CC-28F2479393B8}
+# 	1:16:IDD_MOTOR_AXIS_2:124
+# 	2:16:Resource Include:resource.h
+# 	2:27:CLASS: CDialog_Motor_Axis_2:CDialog_Motor_Axis_2
+# 	2:23:Dialog_Motor_Axis_2.cpp:Dialog_Motor_Axis_2.cpp
+# 	2:10:ENUM: enum:enum
+# 	2:16:IDD_MOTOR_AXIS_2:IDD_MOTOR_AXIS_2
+# 	2:21:Dialog_Motor_Axis_2.h:Dialog_Motor_Axis_2.h
+# 	2:19:Application Include:handler.h
+# End Section
+# Section Handler : {30E78C27-1EBE-4A5D-B6C2-E519218D337E}
+# 	1:17:IDD_MOTOR_AXIS_10:139
+# 	2:16:Resource Include:resource.h
+# 	2:17:IDD_MOTOR_AXIS_10:IDD_MOTOR_AXIS_10
+# 	2:10:ENUM: enum:enum
+# 	2:28:CLASS: CDialog_Motor_Axis_10:CDialog_Motor_Axis_10
+# 	2:22:Dialog_Motor_Axis_10.h:Dialog_Motor_Axis_10.h
+# 	2:19:Application Include:handler.h
+# 	2:24:Dialog_Motor_Axis_10.cpp:Dialog_Motor_Axis_10.cpp
+# End Section
+# Section Handler : {A2E0A297-8B0B-4BC2-828E-F1BB188BBA45}
+# 	1:16:IDD_MOTOR_AXIS_8:137
+# 	2:16:Resource Include:resource.h
+# 	2:21:Dialog_Motor_Axis_8.h:Dialog_Motor_Axis_8.h
+# 	2:10:ENUM: enum:enum
+# 	2:27:CLASS: CDialog_Motor_Axis_8:CDialog_Motor_Axis_8
+# 	2:23:Dialog_Motor_Axis_8.cpp:Dialog_Motor_Axis_8.cpp
+# 	2:19:Application Include:handler.h
+# 	2:16:IDD_MOTOR_AXIS_8:IDD_MOTOR_AXIS_8
+# End Section
+# Section Handler : {82440828-E6E4-42C0-A992-C374F1A1BA11}
+# 	1:21:IDD_DIALOG_PASS_CHECK:114
+# 	2:16:Resource Include:resource.h
+# 	2:21:Dialog_Pass_Check.cpp:Dialog_Pass_Check.cpp
+# 	2:21:IDD_DIALOG_PASS_CHECK:IDD_DIALOG_PASS_CHECK
+# 	2:19:Dialog_Pass_Check.h:Dialog_Pass_Check.h
+# 	2:10:ENUM: enum:enum
+# 	2:25:CLASS: CDialog_Pass_Check:CDialog_Pass_Check
+# 	2:19:Application Include:handler.h
+# End Section
+# Section Handler : {5D1FD30B-A459-4C2B-AF6A-7DFD39FFADDB}
+# 	1:16:IDD_MOTOR_AXIS_1:123
+# 	2:16:Resource Include:resource.h
+# 	2:27:CLASS: CDialog_Motor_Axis_1:CDialog_Motor_Axis_1
+# 	2:23:Dialog_Motor_Axis_1.cpp:Dialog_Motor_Axis_1.cpp
+# 	2:16:IDD_MOTOR_AXIS_1:IDD_MOTOR_AXIS_1
+# 	2:10:ENUM: enum:enum
+# 	2:21:Dialog_Motor_Axis_1.h:Dialog_Motor_Axis_1.h
+# 	2:19:Application Include:handler.h
+# End Section
+# Section Handler : {84059BD8-F9F5-48D8-964E-ABED2F8C43D4}
+# 	1:16:IDD_DIALOG_INFOR:106
+# 	2:16:Resource Include:resource.h
+# 	2:16:IDD_DIALOG_INFOR:IDD_DIALOG_INFOR
+# 	2:20:CLASS: CDialog_Infor:CDialog_Infor
+# 	2:14:Dialog_Infor.h:Dialog_Infor.h
+# 	2:10:ENUM: enum:enum
+# 	2:16:Dialog_Infor.cpp:Dialog_Infor.cpp
+# 	2:19:Application Include:Handler.h
+# End Section
+# Section Handler : {6506618D-6B0F-4392-995D-E0CEE9C2FAC8}
+# 	1:16:IDD_MOTOR_AXIS_3:125
+# 	2:16:Resource Include:resource.h
+# 	2:27:CLASS: CDialog_Motor_Axis_3:CDialog_Motor_Axis_3
+# 	2:23:Dialog_Motor_Axis_3.cpp:Dialog_Motor_Axis_3.cpp
+# 	2:10:ENUM: enum:enum
+# 	2:16:IDD_MOTOR_AXIS_3:IDD_MOTOR_AXIS_3
+# 	2:19:Application Include:handler.h
+# 	2:21:Dialog_Motor_Axis_3.h:Dialog_Motor_Axis_3.h
+# End Section
+# Section Handler : {1A424EFC-3935-476A-BB74-25A5ABDDD317}
+# 	1:16:IDD_MOTOR_AXIS_9:138
+# 	2:16:Resource Include:resource.h
+# 	2:21:Dialog_Motor_Axis_9.h:Dialog_Motor_Axis_9.h
+# 	2:10:ENUM: enum:enum
+# 	2:27:CLASS: CDialog_Motor_Axis_9:CDialog_Motor_Axis_9
+# 	2:23:Dialog_Motor_Axis_9.cpp:Dialog_Motor_Axis_9.cpp
+# 	2:19:Application Include:handler.h
+# 	2:16:IDD_MOTOR_AXIS_9:IDD_MOTOR_AXIS_9
+# End Section
+# Section Handler : {208E09E9-EDF4-4648-9D6D-48395B1D9227}
+# 	1:19:IDD_DIALOG_KEYBOARD:109
+# 	2:16:Resource Include:resource.h
+# 	2:10:ENUM: enum:enum
+# 	2:19:Dialog_Keyboard.cpp:Dialog_Keyboard.cpp
+# 	2:19:IDD_DIALOG_KEYBOARD:IDD_DIALOG_KEYBOARD
+# 	2:17:Dialog_Keyboard.h:Dialog_Keyboard.h
+# 	2:19:Application Include:Handler.h
+# 	2:23:CLASS: CDialog_Keyboard:CDialog_Keyboard
+# End Section
 # Section Handler : {2ACB1E55-95A5-43D8-AE8C-8CB5C0AB7085}
 # 	2:29:CLASS: CDialog_Motor_Axis_Tab:CDialog_Motor_Axis_Tab
 # 	2:25:Dialog_Motor_Axis_Tab.cpp:Dialog_Motor_Axis_Tab.cpp
@@ -1946,16 +2134,6 @@ SOURCE=.\ReadMe.txt
 # 	2:19:Application Include:handler.h
 # 	2:20:Dialog_Pass_Change.h:Dialog_Pass_Change.h
 # End Section
-# Section Handler : {620151F6-3A4F-482D-87B7-FD82B9637942}
-# 	1:19:IDD_SCREEN_INITIAL1:120
-# 	2:16:Resource Include:resource.h
-# 	2:22:CLASS: CScreen_Initial:CScreen_Initial
-# 	2:18:IDD_SCREEN_INITIAL:IDD_SCREEN_INITIAL1
-# 	2:10:ENUM: enum:enum
-# 	2:18:Screen_Initial.cpp:Screen_Initial1.cpp
-# 	2:19:Application Include:handler.h
-# 	2:16:Screen_Initial.h:Screen_Initial1.h
-# End Section
 # Section Handler : {1E6C4F0E-DA1E-4D4A-ADBF-DA62D0777C82}
 # 	1:18:IDD_DIALOG_MESSAGE:108
 # 	2:16:Resource Include:resource.h
@@ -1966,15 +2144,15 @@ SOURCE=.\ReadMe.txt
 # 	2:10:ENUM: enum:enum
 # 	2:19:Application Include:Handler.h
 # End Section
-# Section Handler : {EFE5357C-0A0B-45D2-8277-D2581811E006}
-# 	1:16:IDD_DIALOG_COLOR:105
+# Section Handler : {620151F6-3A4F-482D-87B7-FD82B9637942}
+# 	1:19:IDD_SCREEN_INITIAL1:120
 # 	2:16:Resource Include:resource.h
-# 	2:20:CLASS: CDialog_Color:CDialog_Color
-# 	2:14:Dialog_Color.h:Dialog_Color.h
+# 	2:22:CLASS: CScreen_Initial:CScreen_Initial
+# 	2:18:IDD_SCREEN_INITIAL:IDD_SCREEN_INITIAL1
 # 	2:10:ENUM: enum:enum
-# 	2:16:Dialog_Color.cpp:Dialog_Color.cpp
-# 	2:19:Application Include:Handler.h
-# 	2:16:IDD_DIALOG_COLOR:IDD_DIALOG_COLOR
+# 	2:18:Screen_Initial.cpp:Screen_Initial1.cpp
+# 	2:19:Application Include:handler.h
+# 	2:16:Screen_Initial.h:Screen_Initial1.h
 # End Section
 # Section Handler : {AF5DA7F1-332C-4642-8C7B-30DAB3A68D5D}
 # 	1:16:IDD_MOTOR_AXIS_5:127
@@ -1986,15 +2164,15 @@ SOURCE=.\ReadMe.txt
 # 	2:19:Application Include:handler.h
 # 	2:21:Dialog_Motor_Axis_5.h:Dialog_Motor_Axis_5.h
 # End Section
-# Section Handler : {1AE3EBFC-A018-4617-87A1-1BB333106B17}
-# 	1:16:IDD_DIALOG_ABOUT:102
+# Section Handler : {EFE5357C-0A0B-45D2-8277-D2581811E006}
+# 	1:16:IDD_DIALOG_COLOR:105
 # 	2:16:Resource Include:resource.h
-# 	2:16:Dialog_About.cpp:Dialog_About.cpp
+# 	2:20:CLASS: CDialog_Color:CDialog_Color
+# 	2:14:Dialog_Color.h:Dialog_Color.h
 # 	2:10:ENUM: enum:enum
-# 	2:16:IDD_DIALOG_ABOUT:IDD_DIALOG_ABOUT
-# 	2:20:CLASS: CDialog_About:CDialog_About
+# 	2:16:Dialog_Color.cpp:Dialog_Color.cpp
 # 	2:19:Application Include:Handler.h
-# 	2:14:Dialog_About.h:Dialog_About.h
+# 	2:16:IDD_DIALOG_COLOR:IDD_DIALOG_COLOR
 # End Section
 # Section Handler : {1EEE6545-7252-4C6F-87FB-CC43BC6163E5}
 # 	1:16:IDD_SCREEN_MOTOR:143
@@ -2025,6 +2203,16 @@ SOURCE=.\ReadMe.txt
 # 	2:10:ENUM: enum:enum
 # 	2:19:Application Include:Handler.h
 # 	2:13:Dialog_Exit.h:Dialog_Exit.h
+# End Section
+# Section Handler : {1AE3EBFC-A018-4617-87A1-1BB333106B17}
+# 	1:16:IDD_DIALOG_ABOUT:102
+# 	2:16:Resource Include:resource.h
+# 	2:16:Dialog_About.cpp:Dialog_About.cpp
+# 	2:10:ENUM: enum:enum
+# 	2:16:IDD_DIALOG_ABOUT:IDD_DIALOG_ABOUT
+# 	2:20:CLASS: CDialog_About:CDialog_About
+# 	2:19:Application Include:Handler.h
+# 	2:14:Dialog_About.h:Dialog_About.h
 # End Section
 # Section Handler : {AF2E90B9-B07E-4D1D-BB3A-483DCB941EA2}
 # 	1:16:IDD_MOTOR_AXIS_4:126
@@ -2115,184 +2303,4 @@ SOURCE=.\ReadMe.txt
 # 	2:10:ENUM: enum:enum
 # 	2:16:IDD_MOTOR_AXIS_6:IDD_MOTOR_AXIS_6
 # 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {048EE095-669E-46A7-80E6-FF8D771EFC15}
-# 	1:20:IDD_SCREEN_DATA_VIEW:121
-# 	2:16:Resource Include:resource.h
-# 	2:24:CLASS: CScreen_Data_View:CScreen_Data_View
-# 	2:10:ENUM: enum:enum
-# 	2:20:IDD_SCREEN_DATA_VIEW:IDD_SCREEN_DATA_VIEW
-# 	2:19:Application Include:handler.h
-# 	2:20:Screen_Data_View.cpp:Screen_Data_View.cpp
-# 	2:18:Screen_Data_View.h:Screen_Data_View.h
-# End Section
-# Section Handler : {987F7439-F23D-4176-82D2-3ADC8E437864}
-# 	1:20:IDD_DIALOG_MULTI_MSG:111
-# 	2:16:Resource Include:resource.h
-# 	2:20:IDD_DIALOG_MULTI_MSG:IDD_DIALOG_MULTI_MSG
-# 	2:20:Dialog_Multi_Msg.cpp:Dialog_Multi_Msg.cpp
-# 	2:10:ENUM: enum:enum
-# 	2:18:Dialog_Multi_Msg.h:Dialog_Multi_Msg.h
-# 	2:19:Application Include:handler.h
-# 	2:24:CLASS: CDialog_Multi_Msg:CDialog_Multi_Msg
-# End Section
-# Section Handler : {AC4D5BA0-C396-48B0-BCA6-B9F265B4FE5A}
-# 	1:22:IDD_SCREEN_MOTOR_LDULD:119
-# 	2:16:Resource Include:resource.h
-# 	2:22:Screen_Motor_LdUld.cpp:Screen_Motor_LdUld.cpp
-# 	2:20:Screen_Motor_LdUld.h:Screen_Motor_LdUld.h
-# 	2:22:IDD_SCREEN_MOTOR_LDULD:IDD_SCREEN_MOTOR_LDULD
-# 	2:10:ENUM: enum:enum
-# 	2:26:CLASS: CScreen_Motor_LdUld:CScreen_Motor_LdUld
-# 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {8DC1B3E7-834E-4FBA-AFAC-F5F97C0F2C24}
-# 	1:18:IDD_DIALOG_PART_IO:142
-# 	2:16:Resource Include:resource.h
-# 	2:18:Dialog_Part_IO.cpp:Dialog_Part_IO.cpp
-# 	2:16:Dialog_Part_IO.h:Dialog_Part_IO.h
-# 	2:10:ENUM: enum:enum
-# 	2:18:IDD_DIALOG_PART_IO:IDD_DIALOG_PART_IO
-# 	2:22:CLASS: CDialog_Part_IO:CDialog_Part_IO
-# 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {27140B28-9FA2-48F7-BD00-630A91633EAA}
-# 	1:17:IDD_SCREEN_BASIC1:117
-# 	2:16:Resource Include:resource.h
-# 	2:20:CLASS: CScreen_Basic:CScreen_Basic
-# 	2:16:Screen_Basic.cpp:Screen_Basic1.cpp
-# 	2:14:Screen_Basic.h:Screen_Basic1.h
-# 	2:10:ENUM: enum:enum
-# 	2:19:Application Include:handler.h
-# 	2:16:IDD_SCREEN_BASIC:IDD_SCREEN_BASIC1
-# End Section
-# Section Handler : {9CB231B6-6648-4E5F-8A37-8DDCA03D732C}
-# 	1:25:IDD_SCREEN_LIST_OPERATION:122
-# 	2:16:Resource Include:resource.h
-# 	2:25:Screen_List_Operation.cpp:Screen_List_Operation.cpp
-# 	2:23:Screen_List_Operation.h:Screen_List_Operation.h
-# 	2:25:IDD_SCREEN_LIST_OPERATION:IDD_SCREEN_LIST_OPERATION
-# 	2:29:CLASS: CScreen_List_Operation:CScreen_List_Operation
-# 	2:10:ENUM: enum:enum
-# 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {7ABB6075-8E6E-43D3-8F39-82CCEF73B332}
-# 	1:19:IDD_SCREEN_PGM_INFO:145
-# 	2:17:Screen_Pgm_Info.h:Screen_Pgm_Info.h
-# 	2:16:Resource Include:resource.h
-# 	2:19:Screen_Pgm_Info.cpp:Screen_Pgm_Info.cpp
-# 	2:19:IDD_SCREEN_PGM_INFO:IDD_SCREEN_PGM_INFO
-# 	2:10:ENUM: enum:enum
-# 	2:19:Application Include:handler.h
-# 	2:23:CLASS: CScreen_Pgm_Info:CScreen_Pgm_Info
-# End Section
-# Section Handler : {BF36ECE5-63A5-49D7-A0B6-D343689DEDD9}
-# 	1:15:IDD_DIALOG_MENU:110
-# 	2:16:Resource Include:resource.h
-# 	2:13:Dialog_Menu.h:Dialog_Menu.h
-# 	2:15:Dialog_Menu.cpp:Dialog_Menu.cpp
-# 	2:10:ENUM: enum:enum
-# 	2:15:IDD_DIALOG_MENU:IDD_DIALOG_MENU
-# 	2:19:CLASS: CDialog_Menu:CDialog_Menu
-# 	2:19:Application Include:Handler.h
-# End Section
-# Section Handler : {2FAED75F-EDBA-4BAC-A1F3-06761CF9DA1F}
-# 	1:17:IDD_DIALOG_SELECT:112
-# 	2:16:Resource Include:resource.h
-# 	2:17:IDD_DIALOG_SELECT:IDD_DIALOG_SELECT
-# 	2:10:ENUM: enum:enum
-# 	2:19:Application Include:handler.h
-# 	2:17:Dialog_Select.cpp:Dialog_Select.cpp
-# 	2:15:Dialog_Select.h:Dialog_Select.h
-# 	2:21:CLASS: CDialog_Select:CDialog_Select
-# End Section
-# Section Handler : {A2E0A297-8B0B-4BC2-828E-F1BB188BBA45}
-# 	1:16:IDD_MOTOR_AXIS_8:137
-# 	2:16:Resource Include:resource.h
-# 	2:21:Dialog_Motor_Axis_8.h:Dialog_Motor_Axis_8.h
-# 	2:10:ENUM: enum:enum
-# 	2:27:CLASS: CDialog_Motor_Axis_8:CDialog_Motor_Axis_8
-# 	2:23:Dialog_Motor_Axis_8.cpp:Dialog_Motor_Axis_8.cpp
-# 	2:19:Application Include:handler.h
-# 	2:16:IDD_MOTOR_AXIS_8:IDD_MOTOR_AXIS_8
-# End Section
-# Section Handler : {D1E47E53-FE8F-4AB0-82CC-28F2479393B8}
-# 	1:16:IDD_MOTOR_AXIS_2:124
-# 	2:16:Resource Include:resource.h
-# 	2:27:CLASS: CDialog_Motor_Axis_2:CDialog_Motor_Axis_2
-# 	2:23:Dialog_Motor_Axis_2.cpp:Dialog_Motor_Axis_2.cpp
-# 	2:10:ENUM: enum:enum
-# 	2:16:IDD_MOTOR_AXIS_2:IDD_MOTOR_AXIS_2
-# 	2:21:Dialog_Motor_Axis_2.h:Dialog_Motor_Axis_2.h
-# 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {30E78C27-1EBE-4A5D-B6C2-E519218D337E}
-# 	1:17:IDD_MOTOR_AXIS_10:139
-# 	2:16:Resource Include:resource.h
-# 	2:17:IDD_MOTOR_AXIS_10:IDD_MOTOR_AXIS_10
-# 	2:10:ENUM: enum:enum
-# 	2:28:CLASS: CDialog_Motor_Axis_10:CDialog_Motor_Axis_10
-# 	2:22:Dialog_Motor_Axis_10.h:Dialog_Motor_Axis_10.h
-# 	2:19:Application Include:handler.h
-# 	2:24:Dialog_Motor_Axis_10.cpp:Dialog_Motor_Axis_10.cpp
-# End Section
-# Section Handler : {6506618D-6B0F-4392-995D-E0CEE9C2FAC8}
-# 	1:16:IDD_MOTOR_AXIS_3:125
-# 	2:16:Resource Include:resource.h
-# 	2:27:CLASS: CDialog_Motor_Axis_3:CDialog_Motor_Axis_3
-# 	2:23:Dialog_Motor_Axis_3.cpp:Dialog_Motor_Axis_3.cpp
-# 	2:10:ENUM: enum:enum
-# 	2:16:IDD_MOTOR_AXIS_3:IDD_MOTOR_AXIS_3
-# 	2:19:Application Include:handler.h
-# 	2:21:Dialog_Motor_Axis_3.h:Dialog_Motor_Axis_3.h
-# End Section
-# Section Handler : {82440828-E6E4-42C0-A992-C374F1A1BA11}
-# 	1:21:IDD_DIALOG_PASS_CHECK:114
-# 	2:16:Resource Include:resource.h
-# 	2:21:Dialog_Pass_Check.cpp:Dialog_Pass_Check.cpp
-# 	2:21:IDD_DIALOG_PASS_CHECK:IDD_DIALOG_PASS_CHECK
-# 	2:19:Dialog_Pass_Check.h:Dialog_Pass_Check.h
-# 	2:10:ENUM: enum:enum
-# 	2:25:CLASS: CDialog_Pass_Check:CDialog_Pass_Check
-# 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {5D1FD30B-A459-4C2B-AF6A-7DFD39FFADDB}
-# 	1:16:IDD_MOTOR_AXIS_1:123
-# 	2:16:Resource Include:resource.h
-# 	2:27:CLASS: CDialog_Motor_Axis_1:CDialog_Motor_Axis_1
-# 	2:23:Dialog_Motor_Axis_1.cpp:Dialog_Motor_Axis_1.cpp
-# 	2:16:IDD_MOTOR_AXIS_1:IDD_MOTOR_AXIS_1
-# 	2:10:ENUM: enum:enum
-# 	2:21:Dialog_Motor_Axis_1.h:Dialog_Motor_Axis_1.h
-# 	2:19:Application Include:handler.h
-# End Section
-# Section Handler : {84059BD8-F9F5-48D8-964E-ABED2F8C43D4}
-# 	1:16:IDD_DIALOG_INFOR:106
-# 	2:16:Resource Include:resource.h
-# 	2:16:IDD_DIALOG_INFOR:IDD_DIALOG_INFOR
-# 	2:20:CLASS: CDialog_Infor:CDialog_Infor
-# 	2:14:Dialog_Infor.h:Dialog_Infor.h
-# 	2:10:ENUM: enum:enum
-# 	2:16:Dialog_Infor.cpp:Dialog_Infor.cpp
-# 	2:19:Application Include:Handler.h
-# End Section
-# Section Handler : {1A424EFC-3935-476A-BB74-25A5ABDDD317}
-# 	1:16:IDD_MOTOR_AXIS_9:138
-# 	2:16:Resource Include:resource.h
-# 	2:21:Dialog_Motor_Axis_9.h:Dialog_Motor_Axis_9.h
-# 	2:10:ENUM: enum:enum
-# 	2:27:CLASS: CDialog_Motor_Axis_9:CDialog_Motor_Axis_9
-# 	2:23:Dialog_Motor_Axis_9.cpp:Dialog_Motor_Axis_9.cpp
-# 	2:19:Application Include:handler.h
-# 	2:16:IDD_MOTOR_AXIS_9:IDD_MOTOR_AXIS_9
-# End Section
-# Section Handler : {208E09E9-EDF4-4648-9D6D-48395B1D9227}
-# 	1:19:IDD_DIALOG_KEYBOARD:109
-# 	2:16:Resource Include:resource.h
-# 	2:10:ENUM: enum:enum
-# 	2:19:Dialog_Keyboard.cpp:Dialog_Keyboard.cpp
-# 	2:19:IDD_DIALOG_KEYBOARD:IDD_DIALOG_KEYBOARD
-# 	2:17:Dialog_Keyboard.h:Dialog_Keyboard.h
-# 	2:19:Application Include:Handler.h
-# 	2:23:CLASS: CDialog_Keyboard:CDialog_Keyboard
 # End Section

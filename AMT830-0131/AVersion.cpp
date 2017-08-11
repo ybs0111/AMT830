@@ -59,7 +59,7 @@ void AVersion::SetVersion()
 	st_handler.mstr_handler_name = "AMT830";
 	st_handler.mstr_handler_version = "Ver 1.0.0";
 //	str_temp = _T("2017,0223");
-	str_temp = _T("2017,0508");
+	str_temp = _T("2017,0810");
 	st_handler.mstr_handler_date = str_temp;
 
 	//m_strUpdate = "SESS Setup";

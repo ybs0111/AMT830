@@ -59,6 +59,10 @@ public:
 public:
 	//{{AFX_DATA(CScreen_Main)
 	enum { IDD = IDD_SCREEN_MAIN };
+	CMacButton	m_btn_unload_tray2;
+	CMacButton	m_btn_back_tray2;
+	CMacButton	m_btn_front_tray2;
+	CMacButton	m_btn_mdl_tray2;
 	CMacButton	m_clip_recovery;
 	CMacButton	m_clip_remove;
 	CMacButton	m_btn_multilot_init;
@@ -399,6 +403,10 @@ protected:
 	afx_msg void OnSetfocusEditLotNo();
 	afx_msg void OnBtnUmdStacker2TrayLockOnoff();
 	afx_msg void OnBtnBarcodePrintReset();
+	afx_msg void OnBtnMdlTray2();
+	afx_msg void OnBtnFrontTray2();
+	afx_msg void OnBtnFrontBack2();
+	afx_msg void OnBtnFrontUnload2();
 	//}}AFX_MSG
 //	afx_msg void OnCellClick(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnMain_Work_Info_Display(WPARAM wParam,LPARAM lParam);  // 테스트 결과 정보 화면에 출력하기 위한 사용자 정의 메시지 추가 

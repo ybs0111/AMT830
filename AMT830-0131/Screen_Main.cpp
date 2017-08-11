@@ -64,7 +64,10 @@ void CScreen_Main::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CScreen_Main)
-
+	DDX_Control(pDX, IDC_BTN_FRONT_UNLOAD2, m_btn_unload_tray2);
+	DDX_Control(pDX, IDC_BTN_FRONT_BACK2, m_btn_back_tray2);
+	DDX_Control(pDX, IDC_BTN_FRONT_TRAY2, m_btn_front_tray2);
+	DDX_Control(pDX, IDC_BTN_MDL_TRAY2, m_btn_mdl_tray2);
 	DDX_Control(pDX, IDC_BTN_CLIP_CAP_RESET, m_clip_recovery);
 	DDX_Control(pDX, IDC_BTN_CLIP_CAP_REMOVE, m_clip_remove);
 	DDX_Control(pDX, IDC_BTN_MULTILOT_INIT, m_btn_multilot_init);
@@ -216,6 +219,10 @@ BEGIN_MESSAGE_MAP(CScreen_Main, CFormView)
 	ON_EN_SETFOCUS(IDC_EDIT_LOT_NO, OnSetfocusEditLotNo)
 	ON_BN_CLICKED(IDC_BTN_UMD_STACKER2_TRAY_LOCK_ONOFF, OnBtnUmdStacker2TrayLockOnoff)
 	ON_BN_CLICKED(IDC_BTN_BARCODE_PRINT_RESET, OnBtnBarcodePrintReset)
+	ON_BN_CLICKED(IDC_BTN_MDL_TRAY2, OnBtnMdlTray2)
+	ON_BN_CLICKED(IDC_BTN_FRONT_TRAY2, OnBtnFrontTray2)
+	ON_BN_CLICKED(IDC_BTN_FRONT_BACK2, OnBtnFrontBack2)
+	ON_BN_CLICKED(IDC_BTN_FRONT_UNLOAD2, OnBtnFrontUnload2)
 	//}}AFX_MSG_MAP
  	ON_MESSAGE(WM_WORK_END, OnMain_Work_Info_Display)  // 테스트 결과 정보 화면에 출력하기 위한 사용자 정의 메시지 추가 
  	ON_MESSAGE(SSM_CLICK, OnCellClick)
@@ -3046,175 +3053,53 @@ void CScreen_Main::OnMainMulLotDisplay()
 
 void CScreen_Main::OnBtnMultilotInit() 
 {
-//	int n_response;//, nRet;
+
 	char cJamcode[10] = {0,};
 
-//	if (st_handler.mn_motor_init_check != CTL_YES)	// 모터 초기화를 하지 않았다면 동작하지 않는다. 2K4/11/23/ViboX
-//	{
-//		Func.OnSet_IO_Port_Sound(IO_ON);
-//		sprintf(st_msg.c_abnormal_msg, "[MOTOR INIT CHECK] Motor Initial...");
-//		if (st_handler.cwnd_list != NULL)
-//		{
-//			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);
-//		}
-//		sprintf(cJamcode,"909002");
-//		st_work.mn_run_status = CTL_dWARNING;
-//		CTL_Lib.Alarm_Error_Occurrence(9999, st_work.mn_run_status, cJamcode);
-//		return;
-//	}
-//	if (Func.DoorOpenCheckSpot() == RET_ERROR)	
-//	{
-//		Func.OnSet_IO_Port_Sound(IO_ON);
-//
-//		sprintf(st_msg.c_abnormal_msg, "[DOOR CHECK] Door Open being done Run become.");
-//		if (st_handler.cwnd_list != NULL)  st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);			
-//		st_work.mn_run_status = dWARNING;	// dJAM,dWARNING  Alarm 화면을 띄워준다. 2K4/11/21/ViboX
-//		return;
-//	}
-//	// Air 감지 센서를 확인한다.
-//	if (FAS_IO.get_in_bit(st_io.i_main_air_chk, IO_ON) == IO_OFF)
-//	{
-//		//900200 0 90 "Air Supply Check Error."
-//		sprintf(cJamcode,"900200");    // 발생한 알람 코드 설정 //
-//		st_work.mn_run_status = dWARNING;  // 장비 동작 상태 설정 //
-//		CTL_Lib.Alarm_Error_Occurrence(5500, st_work.mn_run_status, cJamcode);
-//		return;
-//	}	
-//
-//	if (FAS_IO.Get_In_Bit(st_io.i_mc1_chk) == CTL_NO || FAS_IO.Get_In_Bit(st_io.i_mc2_chk) == CTL_NO )
-//	{
-//		st_handler.mstrSelectMessage = "먼저 RESET 버튼을 눌러 주세요.";
-//		if(st_handler.mn_language == LANGUAGE_ENGLISH) 
-//		{
-//			st_handler.mstrSelectMessage = "RESET Button Push.";
-//		}
-//		
-//		st_handler.mnSelectMessage = 0;		
-//		::PostMessage(st_handler.hWnd, WM_MAINFRAME_WORK, 1001, 0);		
-//		if (st_alarm.mstr_cur_state == "0")	FAS_IO.set_out_bit(st_io.o_buzzer_1, IO_ON);
-//		else                                FAS_IO.set_out_bit(st_io.o_buzzer_2, IO_ON);
-//		return;
-//	}
-//	CDialog_Select select_dlg;
-//
-//	st_msg.mstr_confirm_msg = _T("Multi Lot 초기화를 진행하시겠습니까?");
-//	if(st_handler.mn_language == LANGUAGE_ENGLISH) 
-//	{
-//		st_msg.mstr_confirm_msg = _T("Are you want to proceed with the initialization Multi Lot?");
-//	}
-//
-//	
-//	n_response = select_dlg.DoModal();
-//	if(n_response == IDOK)
-//	{
-//		/// 20140128   180106 
-//
-////2014.0519	
-//// 		nRet = FAS_IO.get_in_bit(st_io.i_ld_tube_s_empty_chk, IO_OFF);
-//// 		if(nRet == IO_ON)
-//// 		{//180106 0 18 "로드 튜브에 튜브가 체크되었습니다. 제거해 주세요."
-//// 			sprintf(mc_alarmcode,"180106");
-//// 			st_work.mn_run_status = CTL_dWARNING;
-//// 			CTL_Lib.Alarm_Error_Occurrence(8090, st_work.mn_run_status, mc_alarmcode);
-//// 			return;
-//// 		}
-//
-//		if(st_handler.mn_menu_lock != TRUE)
-//		{
-//			st_handler.mn_menu_lock = TRUE;
-//		}
-//
-//		::PostMessage(st_handler.hWnd, WM_FORM_CHANGE, 7, 2);		// 메인 프레임으로 메시지 전송하여 알람 화면 종료 요청 
-//		if (st_handler.mn_menu_num != 101)
-//		{
-//			::SendMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 1);	// 메인 프레임으로 메시지 전송하여 메인 화면으로 전환 
-//		}
-//
-//		st_work.n_multilot_start = CTL_YES;
-//		Func.OnSet_IO_Port_Run();									// 장비 상태 : 동작 상태인 경우 I/O 출력 내보내는 함수
-//		if(st_work.n_jamcode_flag == YES)
-//		{
-//			st_work.n_jamcode_flag	= NO;
-//			st_work.t_jamcode_end	= CTime::GetCurrentTime();
-//			::PostMessage(st_handler.hWnd, WM_WORK_END, MAIN_MYSQL_ALARM_WRITE, 0);
-//		}
-//
-//		Run_Handler_Check.n_emo_chk = FALSE;
-//		Run_Handler_Check.n_air_chk = FALSE;
-//		Run_Handler_Check.n_light_curtain_chk = CTL_NO;
-//		alarm.n_area_alarm = FALSE;
-//		alarm.n_emo_alarm = FALSE;
-//
-//		st_work.mn_Barcode_OutPrint = -1;//20140215
-//		st_sync.n_visionrbt_workend_flag[VISION_1_SITE] = CTL_NO;//20140215
-//		st_sync.n_visionrbt_workend_flag[VISION_2_SITE] = CTL_NO;//20140215
-//
-//		Func.InitNode();
-//
-//		st_sync.b_lotcancel_use = FALSE;//20130130
-//
-//		if(st_handler.n_lotend_ready == 10)
-//		{
-//			st_work.mn_run_status = dLOTREADY;
-//		}
-//		if(st_handler.cwnd_list != NULL)
-//		{
-//			sprintf(st_msg.c_normal_msg, "Multi Init를 진행합니다.");
-//			if(st_handler.mn_language == LANGUAGE_ENGLISH) 
-//			{
-//				sprintf(st_msg.c_normal_msg, "Proceed to the Multi Init!!");
-//			}
-//
-//			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, NORMAL_MSG);  // 동작 실패 출력 요청
-//		}
-//
-//	}
 
-//	int nmenu_chk = OnMenu_Change_Checking(); // 메뉴 사용 가능 여부 검사 함수 //   
-//	if (nmenu_chk != TRUE)  return;
-		st_handler.mn_menu_lock = FALSE;
-		st_handler.mn_system_lock = FALSE;
+	st_handler.mn_menu_lock = FALSE;
+	st_handler.mn_system_lock = FALSE;
 		
 
-		::PostMessage(st_handler.hWnd, WM_FORM_CHANGE, 7, 2);		// 메인 프레임으로 메시지 전송하여 알람 화면 종료 요청 
-		if (st_handler.mn_menu_num != 101)
-		{
-			::SendMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 1);	// 메인 프레임으로 메시지 전송하여 메인 화면으로 전환 
-		}
-	//if(st_handler.mn_level_teach != TRUE)
-	//{
-	//	if(st_handler.mn_level_maint != TRUE)
-	//	{
-	//		if(st_handler.cwnd_list != NULL)
-	//		{
-	//			st_other.str_op_abnormal_msg = _T("[Request Level] Maint or Teaching!");
-	//			st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);
-	//		}
-
-	//		return ;
-	//	}
-	//}
+//	::PostMessage(st_handler.hWnd, WM_FORM_CHANGE, 7, 2);		// 메인 프레임으로 메시지 전송하여 알람 화면 종료 요청 
+//	if (st_handler.mn_menu_num != 101)
+//	{
+//		::SendMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 1);	// 메인 프레임으로 메시지 전송하여 메인 화면으로 전환 
+//	}
 
 	//2015.0128
-	int nResponse;  // 대화 상자 리턴 플래그 
-	CDialog_Select  dlgInfo;
-	st_other.str_confirm_msg = _T("Do equipment initialization.");
+//	int nResponse;  // 대화 상자 리턴 플래그 
+//	CDialog_Select  dlgInfo;
+//	st_other.str_confirm_msg = _T("Do equipment initialization.");
 
-
-	nResponse = dlgInfo.DoModal();
-	if(nResponse == IDOK)
-	{
+//	nResponse = dlgInfo.DoModal();
+//	if(nResponse == IDOK)
+//	{
 		
-		::SendMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 5);
-		//초기화를 진행하자~~~
-		ShellExecute(NULL, NULL,"HANDLER_RESETOR.EXE", _T("AutoResetOn"), NULL, SW_SHOWNORMAL);
+//		::SendMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 5);
+//		ShellExecute(NULL, NULL,"HANDLER_RESETOR.EXE", _T("AutoResetOn"), NULL, SW_SHOWNORMAL);
 
-		if(st_work.mn_run_status != dSTOP)
-		{
-			st_work.mn_run_status = dSTOP; // 장비 상태
-		}
-		Sleep(1500);
-		::PostMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 5);  // 종료 대화 상자 출력 요청  // 강제종료하자..
+//		if(st_work.mn_run_status != dSTOP)
+//		{
+//			st_work.mn_run_status = dSTOP; // 장비 상태
+//		}
+//		Sleep(1500);
+//		::PostMessage(st_handler.hWnd, WM_FORM_CHANGE, 1, 5);  // 종료 대화 상자 출력 요청  // 강제종료하자..
+//	}
+
+	CDialog_Select select_dlg;
+	
+	st_msg.mstr_confirm_msg = _T("Continuous Lot 초기화를 진행하시겠습니까?");
+	if(st_handler.mn_language == LANGUAGE_ENGLISH) 
+	{
+		st_msg.mstr_confirm_msg = _T("Are you sure you want to proceed with the initialization Continuous Lot?");
+	}
+
+	
+	int n_response = select_dlg.DoModal();
+	if(n_response == IDOK)
+	{
+		st_work.n_multilot_start = CTL_YES;
 	}
 
 }
@@ -5594,12 +5479,13 @@ int CScreen_Main::ClipRecovery()
 		// 20140220
 		if(st_basic.n_mode_cap_remove == 1)
 		{
-			FAS_IO.OnCylinderAction(st_io.o_tube_rotator_cap_remove_onoff, IO_ON);
+//			FAS_IO.OnCylinderAction(st_io.o_tube_rotator_cap_remove_onoff, IO_ON);
 		}
 		else
 		{
 		}
 		m_recorvery_step = 350;
+		m_recorvery_step = 400;
 		break;
 
 	case 350:
@@ -6482,4 +6368,89 @@ void CScreen_Main::OnBtnBarcodePrintReset()
 	{
 		st_handler.n_vision_reset = YES;
 	}		
+}
+
+void CScreen_Main::OnBtnMdlTray2() 
+{
+	if(st_work.mn_run_status == dRUN) return;
+	if(FAS_IO.get_in_bit(st_io.i_m_stacker2_tray_clamp_on_chk, IO_ON) == IO_ON)
+	{
+		if (FAS_IO.get_in_bit(st_io.i_m_stacker2_rail_fwd_chk, IO_ON) == IO_ON && 
+			FAS_IO.get_in_bit(st_io.i_m_stacker2_rail_bwd_chk, IO_OFF) == IO_OFF)
+		{
+			FAS_IO.set_out_bit(st_io.o_m_stacker2_tray_clamp_onoff, IO_OFF);
+		}
+		else
+		{
+			AfxMessageBox("It may be drop module tray!");
+		}
+	}
+	else
+	{
+		FAS_IO.set_out_bit(st_io.o_m_stacker2_tray_clamp_onoff, IO_ON);
+	}
+}
+
+
+void CScreen_Main::OnBtnFrontTray2() 
+{
+	if(st_work.mn_run_status == dRUN) return;
+	if(FAS_IO.get_in_bit(st_io.o_hs_fwd_stacker2_tray_clamp_onoff, IO_ON) == IO_ON)
+	{
+		if (FAS_IO.get_in_bit(st_io.i_hs_fwd_stacker2_rail_fwd_chk, IO_ON) == IO_ON && 
+			FAS_IO.get_in_bit(st_io.i_hs_fwd_stacker2_rail_bwd_chk, IO_OFF) == IO_OFF)
+		{
+			FAS_IO.set_out_bit(st_io.o_hs_fwd_stacker2_tray_clamp_onoff, IO_OFF);
+		}
+		else
+		{
+			AfxMessageBox("It may be front heatsink tray!");
+		}
+	}
+	else
+	{
+		FAS_IO.set_out_bit(st_io.o_hs_fwd_stacker2_tray_clamp_onoff, IO_ON);
+	}	
+}
+
+void CScreen_Main::OnBtnFrontBack2() 
+{
+	if(st_work.mn_run_status == dRUN) return;
+	if(FAS_IO.get_in_bit(st_io.o_hs_bwd_stacker2_tray_clamp_onoff, IO_ON) == IO_ON)
+	{
+		if (FAS_IO.get_in_bit(st_io.i_hs_bwd_stacker2_rail_fwd_chk, IO_ON) == IO_ON && 
+			FAS_IO.get_in_bit(st_io.i_hs_bwd_stacker2_rail_bwd_chk, IO_OFF) == IO_OFF)
+		{
+			FAS_IO.set_out_bit(st_io.o_hs_bwd_stacker2_tray_clamp_onoff, IO_OFF);
+		}
+		else
+		{
+			AfxMessageBox("It may be back heatsink tray!");
+		}
+	}
+	else
+	{
+		FAS_IO.set_out_bit(st_io.o_hs_bwd_stacker2_tray_clamp_onoff, IO_ON);
+	}	
+}
+
+void CScreen_Main::OnBtnFrontUnload2() 
+{
+	if(st_work.mn_run_status == dRUN) return;
+	if(FAS_IO.get_in_bit(st_io.o_uld_stacker2_tray_clamp_onoff, IO_ON) == IO_ON)
+	{
+		if (FAS_IO.get_in_bit(st_io.i_uld_stacker2_rail_fwd_chk, IO_ON) == IO_ON && 
+			FAS_IO.get_in_bit(st_io.i_uld_stacker2_rail_bwd_chk, IO_OFF) == IO_OFF)
+		{
+			FAS_IO.set_out_bit(st_io.o_uld_stacker2_tray_clamp_onoff, IO_OFF);
+		}
+		else
+		{
+			AfxMessageBox("It may be unload#2 tray!");
+		}
+	}
+	else
+	{
+		FAS_IO.set_out_bit(st_io.o_uld_stacker2_tray_clamp_onoff, IO_ON);
+	}	
 }

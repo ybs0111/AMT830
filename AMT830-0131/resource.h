@@ -165,12 +165,16 @@
 #define IDC_BTN_EJECTOR_UP              248
 #define IDC_BTN_WORK_INFORMATION4       248
 #define IDC_BTN_ELECTROSTATIC_TEST      249
+#define IDC_BTN_MDL_TRAY2               249
 #define IDC_BTN_EMG                     250
 #define IDC_BTN_EMO_STOP                251
+#define IDC_BTN_FRONT_TRAY2             251
 #define IDC_BTN_END_TIME                252
 #define IDC_BTN_EXIT                    253
+#define IDC_BTN_FRONT_BACK2             253
 #define IDC_BTN_FILE_EDITOR             254
 #define IDC_BTN_FRONT_BUFFER            255
+#define IDC_BTN_FRONT_UNLOAD2           255
 #define IDC_BTN_FTP_CONNECT_TEST        256
 #define IDC_BTN_FTP_TEST                257
 #define IDC_BTN_FTPID_SAVE              258
@@ -1722,6 +1726,7 @@
 #define IDB_CLIPTUBE                    1568
 #define IDB_CLIPTUBE_BK                 1569
 #define IDB_TRAY_THIS                   1571
+#define IDR_DEFAULT1                    1572
 #define ID_PGM_INFO                     1600
 #define IDC_MSG_PICKER_1                1608
 #define IDC_MSG_PICKER_2                1609
@@ -2516,7 +2521,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        1572
+#define _APS_NEXT_RESOURCE_VALUE        1573
 #define _APS_NEXT_COMMAND_VALUE         1601
 #define _APS_NEXT_CONTROL_VALUE         2029
 #define _APS_NEXT_SYMED_VALUE           1889

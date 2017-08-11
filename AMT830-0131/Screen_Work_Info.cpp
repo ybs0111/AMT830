@@ -99,7 +99,7 @@ BOOL CScreen_Work_Info::DestroyWindow()
 		m_p_font = NULL;
 	}
 
-	for(int i=1; i<MAX_PORT; i++)//20120620
+	for(int i=2; i<MAX_PORT; i++)//20120620
 	{
 		if(i == 2)  break;
 		::PostMessage(st_handler.hWnd, WM_SERIAL_PORT, YES, i);

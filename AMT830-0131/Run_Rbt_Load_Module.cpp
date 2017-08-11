@@ -882,8 +882,20 @@ void CRun_Rbt_Load_Module::Run_Move()
 
 		if(HeadVal == -1)
 		{
-			RunStep = 3100;
-			break;
+			for(i=0;i<4;i++)
+			{
+				if(st_sync.n_module_site_status[LDMODULE_SITE][i][0] == BUFF_EMPTY &&
+					st_picker.n_work_buffer_enable[i] == TRUE )
+				{
+					HeadVal=i;
+					break;
+				}
+			}
+			if(HeadVal == -1)
+			{
+				RunStep = 3100;
+				break;
+			}
 		}
 		
 		st_sync.n_module_buffer_action_site[LDMODULE_SITE][0] = -1;
@@ -900,7 +912,15 @@ void CRun_Rbt_Load_Module::Run_Move()
 				l_until_wait_time[0] = GetCurrentTime();
  			}
 
-			break;
+		}
+		else
+		{
+//			RunStep = 3000;
+//			if(st_handler.cwnd_list != NULL)
+//			{
+//				sprintf(st_msg.c_abnormal_msg, _T("[Module PlaceSiteError] No Shuttle Place Error"));
+//				st_handler.cwnd_list->PostMessage(WM_LIST_DATA, 0, ABNORMAL_MSG);
+//			}
 		}
 
 		break;

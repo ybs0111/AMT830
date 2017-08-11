@@ -798,6 +798,30 @@ int CCtlBd_Library::Motor_SafetyCheck(int n_mode, int n_axis, double d_targetpos
 		}
 		break;
 
+	case M_CLIP_INSERT_Z:
+		d_CurPos[1] = COMI.Get_MotCurrentPos(M_CLIP_INSERT_Y);
+
+		if( d_targetpos == st_motor[M_CLIP_INSERT_Z].md_pos[ULD_CLIP_POS] )
+		{
+			if( ( ( d_CurPos[1] > (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE1] - st_motor[M_CLIP_INSERT_Y].mn_allow ) ) &&
+				( d_CurPos[1] < (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE1] + st_motor[M_CLIP_INSERT_Y].mn_allow) ) ) ||
+				( ( d_CurPos[1] > (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE2] - st_motor[M_CLIP_INSERT_Y].mn_allow ) ) &&
+				( d_CurPos[1] < (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE2] + st_motor[M_CLIP_INSERT_Y].mn_allow) ) ) ||
+				( ( d_CurPos[1] > (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE3] - st_motor[M_CLIP_INSERT_Y].mn_allow ) ) &&
+				( d_CurPos[1] < (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE3] + st_motor[M_CLIP_INSERT_Y].mn_allow) ) ) ||
+				( ( d_CurPos[1] > (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE4] - st_motor[M_CLIP_INSERT_Y].mn_allow ) ) &&
+				( d_CurPos[1] < (st_motor[M_CLIP_INSERT_Y].md_pos[Y_CLIP_WORK_PLACE4] + st_motor[M_CLIP_INSERT_Y].mn_allow) ) ) )
+			{
+			}
+			else
+			{
+				sprintf(COMI.mc_alarmcode,"%02d0003",M_CLIP_INSERT_Y);
+				Alarm_Error_Occurrence(4099, CTL_dWARNING, COMI.mc_alarmcode);
+				return BD_ERROR;
+			}
+		}
+		break;
+
 	case M_M_CLAMP_RBT_GRIPPER:
 		d_CurPos[0] = COMI.Get_MotCurrentPos(M_M_CLAMP_RBT_GRIPPER);
 		if((d_targetpos > st_motor[M_M_CLAMP_RBT_GRIPPER].md_pos[GLIPPER_CLAMP_POS] + st_motor[M_M_CLAMP_RBT_GRIPPER].mn_allow))

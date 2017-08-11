@@ -27,6 +27,11 @@
 
 #define MAXMOTOR		40
 
+#define MODULE_SITE			0
+#define FRONT_SITE			1
+#define REAR_SITE			2
+#define UNLOAD_SITE			3
+
 /////////////////////////////////// 20120620
 #define LABEL_PRINT_MAX_CNT 3	
 #define ML_MAX_CNT 11	
@@ -1805,6 +1810,8 @@ struct st_handler_param
 	int n_unloadCenterChk;
 
 	int n_sync_reinstate;	// 복귀동작 진행상황 확인 변수 20121120
+
+	int	nModelChangeCheck;
 
 } ;
 extern  st_handler_param  st_handler;
